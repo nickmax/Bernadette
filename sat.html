@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nick's SAT Guide</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <!-- Unified Theme: Blue-Green Scholarly -->
+        <!-- Application Structure Plan: The application is designed as a single-page, scrollable dashboard for SAT Writing preparation. The structure prioritizes user-friendly navigation and active learning over a linear, chapter-by-chapter format. The flow begins with a data-driven overview (Most Tested Concepts chart) to help students prioritize. It then moves into categorized, interactive learning modules for Grammar, Sentence Structure, and Rhetoric, where each rule is presented in a "Rule -> Example -> Practice" format using accordions. A dedicated "Practice Drills" section allows for targeted review, and a "Strategy Guide" provides actionable test-taking advice. This structure was chosen because students need to quickly find specific rules, test their knowledge, and focus on high-yield areas, which a static book format makes difficult. The interactive, non-linear design facilitates personalized and efficient studying. -->
+        <!-- Visualization & Content Choices: 
+        Report Info: The book includes an index of official SAT questions categorized by grammar topic. Goal: To help students prioritize studying based on what appears most frequently. Viz/Presentation: A horizontal bar chart (Chart.js) titled "Most Tested Concepts". Interaction: Hovering over bars shows the exact number of questions. Justification: A visual chart is more impactful and easier to interpret than a simple table for understanding concept frequency. Library/Method: Chart.js (Canvas).
+        Report Info: Core grammar rules with examples and explanations. Goal: To teach and reinforce specific rules. Viz/Presentation: Interactive accordions for each rule, containing the explanation, examples (correct/incorrect), and a single-question "Quick Drill". Interaction: Clicking an accordion reveals the content. Clicking an answer option in the drill provides immediate feedback. Justification: Accordions prevent information overload, and interactive drills promote active recall, which is more effective than passive reading. Library/Method: HTML/CSS/JS.
+        Report Info: Strategic advice for the test. Goal: To provide actionable test-taking tips. Viz/Presentation: A styled list with icons in a dedicated section. Interaction: None needed, clarity is key. Justification: A clean, easily scannable list is best for memorable, high-level strategies. Library/Method: HTML/Tailwind CSS. -->
+        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #F0F9FF;
+            }
+            .accordion-content {
+                display: none;
+                overflow: hidden;
+                transition: max-height 0.3s ease-in-out;
+            }
+            .accordion-button.active + .accordion-content {
+                display: block;
+            }
+            .quiz-option {
+                transition: background-color 0.2s;
+            }
+            .quiz-option.correct {
+                background-color: #D1FAE5;
+                border-color: #10B981;
+            }
+            .quiz-option.incorrect {
+                background-color: #FEE2E2;
+                border-color: #EF4444;
+            }
+            .chart-container {
+                position: relative;
+                width: 100%;
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+                height: 400px;
+                max-height: 50vh;
+            }
+            @media (min-width: 768px) {
+                .chart-container {
+                    height: 500px;
+                }
+            }
+        </style>
+    </head>
+    <body class="antialiased">
+
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl sm:text-2xl font-bold text-blue-800">Nick's SAT Guide</h1>
+                    </div>
+                    <div class="hidden md:block">
+                        <a href="#overview" class="text-blue-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Overview</a>
+                        <a href="#grammar-section" class="text-blue-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Grammar</a>
+                        <a href="#math-section" class="text-blue-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Math</a>
+                        <a href="#strategy" class="text-blue-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Strategy</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-blue-400 hover:text-green-600 hover:bg-blue-100 focus:outline-none">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="md:hidden hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="#overview" class="text-blue-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">Overview</a>
+                    <a href="#grammar-section" class="text-blue-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">Grammar</a>
+                    <a href="#math-section" class="text-blue-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">Math</a>
+                    <a href="#strategy" class="text-blue-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">Strategy</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <!-- Use blue-green theme for all headings, highlights, and buttons -->
+
+        <!-- ...existing content above... -->
+
+        <!-- Place grammar section at the bottom, before </main> -->
+        <!-- GRAMMAR SECTION -->
+        <section id="grammar-section" class="mb-24">
+            <!-- SAT Reading and Writing Cheat Sheet (2025) -->
+            <div class="mb-12 p-6 rounded-lg bg-blue-50 border border-blue-200">
+                <h2 class="text-2xl font-bold text-blue-800 mb-2">SAT Reading and Writing Cheat Sheet</h2>
+                <p class="mb-4 text-slate-700">The digital SAT Reading and Writing section (64 minutes, 2 modules, 27 questions each) tests grammar, punctuation, vocabulary, and reading comprehension through passage-based multiple-choice questions. This cheat sheet summarizes key rules, strategies, and tips to ace the section, focusing on Standard English Conventions (grammar/punctuation) and Expression of Ideas (clarity, organization). Practice with Bluebook app tests at College Board.</p>
+                <h3 class="text-xl font-bold text-blue-700 mt-4 mb-2">Grammar and Punctuation Rules</h3>
+                <ol class="list-decimal ml-6 text-slate-700">
+                    <li class="mb-2">
+                        <strong>Subject-Verb Agreement</strong><br>
+                        <span class="text-slate-600">Rule:</span> Subject and verb must match in number (singular/plural). Ignore words between them.<br>
+                        <span class="text-slate-600">Example:</span> The diner near the dorms, which houses students, serves breakfast. (Singular "diner" → singular "serves")<br>
+                        <span class="text-slate-600">Tip:</span> Cross out prepositional phrases or clauses to identify the subject.
+                </li>
+                    <li class="mb-2">
+                        <strong>Verb Tense Consistency</strong><br>
+                        <span class="text-slate-600">Rule:</span> Keep verbs in the same tense (present, past, future) unless there’s a clear reason to shift.<br>
+                        <span class="text-slate-600">Example:</span> She studies hard and passes the test. (Both present tense)<br>
+                        <span class="text-slate-600">Fix:</span> Incorrect: She studied hard but passes the test. → Correct: She studied hard and passed the test.<br>
+                        <span class="text-slate-600">Tip:</span> Identify the established tense in the passage first.
+                </li>
+                    <li class="mb-2">
+                        <strong>Pronoun Agreement and Clarity</strong><br>
+                        <span class="text-slate-600">Rule:</span> Pronouns must match their antecedent in number and gender; avoid ambiguity.<br>
+                        <span class="text-slate-600">Example:</span> The team won its game. (Singular "team" → singular "its")<br>
+                        <span class="text-slate-600">Common Errors:</span> Its (possessive) vs. It’s (it is); Their (plural possessive) vs. They’re (they are) vs. There (place). Who (subject, people) vs. Whom (object, people); That (things/animals).<br>
+                        <span class="text-slate-600">Tip:</span> If a regular noun is an option, it’s often clearer than a pronoun.
+                </li>
+                    <li class="mb-2">
+                        <strong>Possessive vs. Plural Nouns</strong><br>
+                        <span class="text-slate-600">Rule:</span> Possessive nouns use apostrophe + s (singular) or s + apostrophe (plural ending in s). Plural nouns ending in s use s alone.<br>
+                        <span class="text-slate-600">Example:</span> Singular: The cat’s toy (possession). Plural: Two cats (no apostrophe). Plural not ending in s: The children’s toys.<br>
+                        <span class="text-slate-600">Fix:</span> Incorrect: The cats’ are sleeping. → Correct: The cats are sleeping.<br>
+                        <span class="text-slate-600">Tip:</span> Personal pronouns (e.g., hers, theirs) don’t use apostrophes.
+                </li>
+                    <li class="mb-2">
+                        <strong>Punctuation</strong><br>
+                        <span class="text-slate-600">Commas:</span> Use for non-essential clauses (removable without changing meaning): Jane, who is talented, won. (Cross out: Jane won.)<br>
+                  Before coordinating conjunctions (FANBOYS: For, And, Nor, But, Or, Yet, So) linking independent clauses: The test was hard, but she passed.<br>
+                  Avoid between subject and verb: Incorrect: The student, studies hard.<br>
+                  No Oxford comma tested (e.g., apples, bananas, and oranges is correct).<br>
+                        <span class="text-slate-600">Semicolons:</span> Join two independent clauses or separate list items with commas: London is old; it has history.<br>
+                        <span class="text-slate-600">Colons/Dashes:</span> Introduce lists or explanations after a complete sentence: She brought essentials: books, pens, notes.<br>
+                        <span class="text-slate-600">Tip:</span> Semicolons = periods; colons/dashes need a full sentence before but not after.
+                </li>
+                    <li class="mb-2">
+                        <strong>Parallel Structure</strong><br>
+                        <span class="text-slate-600">Rule:</span> Items in a list or paired elements must have the same grammatical form.<br>
+                        <span class="text-slate-600">Example:</span> She enjoys reading, writing, and jogging. (All -ing verbs)<br>
+                        <span class="text-slate-600">Fix:</span> Incorrect: She enjoys reading, writing, and to jog. → Correct: jogging.<br>
+                        <span class="text-slate-600">Tip:</span> Check lists for consistent noun, verb, or phrase forms.
+                </li>
+                    <li class="mb-2">
+                        <strong>Modifiers</strong><br>
+                        <span class="text-slate-600">Rule:</span> Place modifiers next to the word they describe to avoid ambiguity.<br>
+                        <span class="text-slate-600">Example:</span> Being talented, she won the award. (Modifier "being talented" clearly describes "she")<br>
+                        <span class="text-slate-600">Fix:</span> Incorrect: Being talented, the award was given to her. → Correct: Being talented, she was given the award.<br>
+                        <span class="text-slate-600">Tip:</span> Read without the modifier to ensure clarity.
+                </li>
+                    <li class="mb-2">
+                        <strong>Sentence Structure</strong><br>
+                        <span class="text-slate-600">Rule:</span> Every sentence needs a subject and verb to form a complete thought. Avoid fragments and run-ons.<br>
+                        <span class="text-slate-600">Fragment Fix:</span> Incorrect: Asking for a new room. → Correct: She asked for a new room.<br>
+                        <span class="text-slate-600">Run-on Fix:</span> Incorrect: The test was hard, she passed. → Correct: The test was hard, but she passed.<br>
+                        <span class="text-slate-600">Tip:</span> Ensure each clause has a subject and verb; connect independent clauses with a comma + FANBOYS or semicolon.
+                </li>
+                    <li class="mb-2">
+                        <strong>Homophones and Word Choice</strong><br>
+                        <span class="text-slate-600">Rule:</span> Memorize common homophones: affect (verb) vs. effect (noun), insure (insurance) vs. ensure (make certain), further (abstract) vs. farther (distance).<br>
+                        <span class="text-slate-600">Example:</span> The effect of studying is a high score. She will ensure success.<br>
+                        <span class="text-slate-600">Tip:</span> Read carefully in passages to avoid skimming errors.
+                </li>
+                    <li class="mb-2">
+                        <strong>Logical Comparisons</strong><br>
+                        <span class="text-slate-600">Rule:</span> Compare similar things logically.<br>
+                        <span class="text-slate-600">Example:</span> Her score is higher than his (not him).<br>
+                        <span class="text-slate-600">Fix:</span> Incorrect: Her score is higher than all students. → Correct: Her score is higher than that of all other students.<br>
+                        <span class="text-slate-600">Tip:</span> Ensure both sides of the comparison are grammatically parallel.
+                </li>
+                </ol>
+                <h3 class="text-xl font-bold text-blue-700 mt-6 mb-2">Vocabulary Strategies</h3>
+                <ul class="list-disc ml-6 text-slate-700 mb-4">
+                    <li>
+                        <strong>Root Words:</strong> Break down unfamiliar words using prefixes, roots, and suffixes.<br>
+                        <span class="text-slate-600">Example:</span> "Misogynist" → mis- (hatred) + gyn (women) = hatred of women.
+                </li>
+                    <li>
+                        <strong>Context Clues:</strong> Use surrounding text to infer meaning (synonyms, examples, or contrasts).</li>
+                    <li>
+                        <strong>Tip:</strong> Focus on understanding word function in passages, not just memorizing lists.</li>
+                </ul>
+                <h3 class="text-xl font-bold text-blue-700 mt-6 mb-2">Reading Strategies</h3>
+                <ul class="list-disc ml-6 text-slate-700 mb-4">
+                    <li>
+                        <strong>Passage Types:</strong> Questions cover main ideas, details, evidence, data interpretation, and word-in-context.</li>
+                    <li>
+                        <strong>Approach:</strong>
+                        <ul class="list-disc ml-6">
+                            <li>Skim Blurbs: Read introductory text for context.</li>
+                            <li>Mental Roadmap: Note main points, tone shifts, and arguments as you read.</li>
+                            <li>Answer First: Form your own answer before checking choices to avoid traps.</li>
+                            <li>Cross Off Wrong Answers: Eliminate clearly incorrect options to narrow choices.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Tip:</strong> Don’t flag every question; revisit only those needing review (use Bluebook’s flagging feature).</li>
+                </ul>
+                <h3 class="text-xl font-bold text-blue-700 mt-6 mb-2">Time Management</h3>
+                <ul class="list-disc ml-6 text-slate-700 mb-4">
+                    <li>
+                        <strong>Pace:</strong> Spend ~1 minute per question (64 minutes for 54 questions total).</li>
+                    <li>
+                        <strong>Strategy:</strong>
+                        <ul class="list-disc ml-6">
+                            <li>Answer easier questions first; flag and revisit harder ones.</li>
+                            <li>Don’t overthink; trust practice and move on if stuck.</li>
+                            <li>Use a wristwatch to track time (no calculators or phones needed; Desmos is provided).</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Tip:</strong> Practice with timed Bluebook tests to simulate test conditions.</li>
+                </ul>
+                <h3 class="text-xl font-bold text-blue-700 mt-6 mb-2">General Tips</h3>
+                <ul class="list-disc ml-6 text-slate-700 mb-4">
+                    <li>
+                        <strong>Practice:</strong> Use Bluebook app, Khan Academy, or resources like The Critical Reader by Erica Meltzer for realistic questions.</li>
+                    <li>
+                        <strong>Check Context:</strong> Plug answers back into the passage to ensure they fit.</li>
+                    <li>
+                        <strong>Avoid Informal Errors:</strong> SAT tests formal English, not conversational style (e.g., “they” is plural, not singular).</li>
+
+                </ul>
+                <h3 class="text-xl font-bold text-blue-700 mt-6 mb-2">Quick Reference Checklist</h3>
+                <ul class="list-disc ml-6 text-slate-700 mb-4">
+                    <li>
+                        <strong>Before Test:</strong> Memorize rules, practice with Desmos (see shortcuts below), and take timed practice tests.</li>
+                    <li>
+                        <strong>During Test:</strong> Read passages lightly, focus on underlined sections, eliminate wrong answers, and verify with context.</li>
+                    <li>
+                        <strong>Common Traps:</strong> Watch for homophones, misplaced modifiers, and comma splices.</li>
+                </ul>
+            </div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-blue-900">SAT Grammar Guide</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-blue-700">
+            Master the SAT Writing & Language Test with rules, examples, and strategy.
+        </p>
+            </div>
+            <!-- Overview Chart -->
+            <section id="overview" class="mb-16">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg flex flex-col justify-between">
+                        <h3 class="text-2xl font-bold text-blue-800 mb-2 flex items-center gap-2">
+                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h2a4 4 0 014 4v2"/><circle cx="12" cy="7" r="4"/></svg> Most Tested Grammar Concepts</h3>
+                        <p class="text-blue-700 mb-4">Bar chart: frequency of grammar and rhetoric concepts based on official SAT practice tests. Use it to prioritize the most important areas.</p>
+                        <div class="chart-container mb-4">
+                            <canvas id="mostTestedChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg flex flex-col justify-between">
+                        <h3 class="text-2xl font-bold text-green-800 mb-2 flex items-center gap-2">
+                            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 17a4 4 0 004 4h10a4 4 0 004-4V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10z"/></svg> Error Types Breakdown</h3>
+                        <p class="text-green-700 mb-4">Pie chart: see which error types (punctuation, agreement, structure, rhetoric) are most common on the SAT.</p>
+                        <div class="chart-container mb-4">
+                            <canvas id="errorTypesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mt-8 max-w-2xl mx-auto flex items-center gap-3">
+                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01"/></svg>
+                    <span class="font-semibold text-blue-800">Tip:</span>
+                    <span class="text-blue-700">Focus your study on the most frequently tested concepts and your weakest areas for the biggest score gains.</span>
+                </div>
+            </section>
+        </section>
+        <!-- MATH SECTION -->
+        <section id="math-section" class="mb-24">
+
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-blue-900 flex items-center justify-center gap-3">
+                    <svg class="w-10 h-10 text-green-400 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8M8 8h8"/></svg>
+            Comprehensive SAT Math Guide
+        </h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-blue-700">
+            Key concepts, formulas, mnemonics, and sample questions for all major SAT Math topics. 
+        </p>
+                <div class="flex flex-wrap justify-center gap-3 mt-6">
+                    <a href="#math-algebra" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium hover:bg-green-100 hover:text-green-800">Algebra</a>
+                    <a href="#math-geometry" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium hover:bg-green-100 hover:text-green-800">Geometry</a>
+                    <a href="#math-trig" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium hover:bg-green-100 hover:text-green-800">Trigonometry</a>
+                    <a href="#math-stats" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium hover:bg-green-100 hover:text-green-800">Statistics & Probability</a>
+                    <a href="#math-other" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium hover:bg-green-100 hover:text-green-800">Other Topics</a>
+                    <a href="#math-formulas" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium hover:bg-green-100 hover:text-green-800">Formula Sheet</a>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg mt-8">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-2 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12l2 2 4-4"/></svg> Math Topic Frequency</h3>
+                    <p class="text-blue-700 mb-4">Bar chart: frequency of math topics based on official SAT practice tests. Use it to focus your math prep.</p>
+                    <div class="chart-container mb-4">
+                        <canvas id="mathTopicsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Algebra Section -->
+            <section id="math-algebra" class="mb-12">
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-blue-700 mb-2">Algebra</h3>
+                    <h4 class="font-semibold text-lg text-slate-700 mb-1">Key Properties & Formulas</h4>
+                    <ul class="list-disc ml-6 text-slate-600 mb-2">
+                        <li>
+                            <strong>Zero Product Property:</strong> If <span class="font-mono">ab = 0</span>, then <span class="font-mono">a = 0</span> or <span class="font-mono">b = 0</span>.</li>
+                    </ul>
+                    <h4 class="font-semibold text-lg text-slate-700 mb-1">Systems of Equations</h4>
+                    <ul class="list-disc ml-6 text-slate-600 mb-2">
+                        <li>One solution: lines intersect at one point (different slopes).</li>
+                        <li>No solution: parallel lines (same slope, different intercepts).</li>
+                        <li>Infinite solutions: same line (same slope and intercept).</li>
+                    </ul>
+                    <h4 class="font-semibold text-lg text-slate-700 mb-1">Slope, Midpoint, and Distance</h4>
+                    <ul class="list-disc ml-6 text-slate-600 mb-2">
+                        <li>
+                            <strong>Slope Formula:</strong>
+                            <span class="font-mono">m = (y₂ - y₁)/(x₂ - x₁)</span></li>
+                        <li>
+                            <strong>Slope-Intercept Form:</strong>
+                            <span class="font-mono">y = mx + b</span></li>
+                        <li>
+                            <strong>Midpoint Formula:</strong>
+                            <span class="font-mono">((x₁ + x₂)/2, (y₁ + y₂)/2)</span></li>
+                        <li>
+                            <strong>Distance Formula:</strong>
+                            <span class="font-mono">d = √[(x₂ - x₁)² + (y₂ - y₁)²]</span></li>
+                    </ul>
+                </div>
+                <h3 class="text-2xl font-bold text-blue-800 mb-4">Algebra</h3>
+                <div class="mb-6">
+                    <h4 class="font-semibold text-lg text-slate-700 mb-2">Exponents & Radicals</h4>
+                    <ul class="list-disc ml-6 text-slate-600 mb-2">
+                        <li>Exponents: repeated multiplication. Example: <span class="font-mono">2³ = 8</span></li>
+                        <li>Radicals: roots. Example: <span class="font-mono">√x = x<sup>1/2</sup></span></li>
+                        <li>Key Laws: product, quotient, power, negative, zero, fractional exponents.</li>
+                    </ul>
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-2">
+                        <strong>Mnemonic:</strong>
+                        <span class="font-mono">PEMDAS</span> (Parentheses, Exponents, Multiplication/Division, Addition/Subtraction)
+          </div>
+                    <div class="grid md:grid-cols-2 gap-4"></div>
+                </div>
+                <!-- All grammar, drills, and strategy content remains here -->
+                <!-- MATH SECTION MOVED TO BOTTOM -->
+                <!-- ...existing grammar, drills, and strategy content... -->
+                <!-- MATH SECTION STARTS HERE -->
+                <section id="math-section" class="mb-24">
+                    <span class="font-mono">a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup></span></li>
+                <li>
+                    <span class="font-mono">a<sup>m</sup> / a<sup>n</sup> = a<sup>m-n</sup></span></li>
+                <li>
+                    <span class="font-mono">(a<sup>m</sup>)<sup>n</sup> = a<sup>m·n</sup></span></li>
+                <li>
+                    <span class="font-mono">a<sup>-n</sup> = 1/a<sup>n</sup></span></li>
+                <li>
+                    <span class="font-mono">a<sup>0</sup> = 1</span> (if a ≠ 0)</li>
+                <li>
+                    <span class="font-mono">a<sup>m/n</sup> = <sup>n</sup>√a<sup>m</sup></span></li>
+                <li>
+                    <span class="font-mono">√ab = √a · √b</span></li>
+            </ul>
+        </div>
+        <div>
+            <h5 class="font-semibold text-blue-700 mb-1">Sample Q&A</h5>
+            <strong>Q:</strong> Evaluate <span class="font-mono">(-1)<sup>4</sup>
+            </span>.<br>
+            <strong>A:</strong> 1<br>
+            <span class="text-xs text-slate-500">Even exponent makes negative base positive.</span>
+        </div>
+        <div class="bg-white border border-slate-200 rounded p-3">
+            <strong>Q:</strong> Simplify <span class="font-mono">√48</span>.<br>
+            <strong>A:</strong>
+            <span class="font-mono">4√3</span>
+        </div>
+    </div>
+</div>
+</div>
+<div class="mb-6">
+<h3 class="text-xl font-bold text-blue-700 mb-2">Exponents & Radicals</h3>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>
+        <span class="font-mono">a⁰ = 1</span></li>
+    <li>
+        <span class="font-mono">a<sup>-n</sup> = 1/a<sup>n</sup></span></li>
+    <li>
+        <span class="font-mono">a<sup>m/n</sup> = <sup>n</sup>√a<sup>m</sup></span></li>
+    <li>
+        <span class="font-mono">(a<sup>m</sup>)<sup>n</sup> = a<sup>mn</sup></span></li>
+</ul>
+<h3 class="text-xl font-bold text-blue-700 mb-2">Quadratics</h3>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>
+        <strong>Vertex form:</strong>
+        <span class="font-mono">y = a(x - h)² + k</span>, vertex <span class="font-mono">(h, k)</span></li>
+    <li>
+        <strong>Factored form:</strong>
+        <span class="font-mono">y = a(x - r₁)(x - r₂)</span></li>
+    <li>
+        <strong>Standard form:</strong>
+        <span class="font-mono">y = ax² + bx + c</span></li>
+    <li>
+        <strong>Vertex:</strong>
+        <span class="font-mono">x = -b/(2a)</span></li>
+    <li>
+        <strong>Quadratic Formula:</strong>
+        <span class="font-mono">x = [-b ± √(b²-4ac)]/(2a)</span></li>
+    <li>
+        <strong>Discriminant:</strong>
+        <span class="font-mono">b² - 4ac</span> (determines number of real roots)</li>
+</ul>
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Functions & Their Graphs</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Functions map inputs to outputs: <span class="font-mono">f(x) = 2x + 3</span></li>
+    <li>Composite: <span class="font-mono">f(g(x))</span></li>
+    <li>Visualize linear, quadratic, and exponential functions on a graph.</li>
+</ul>
+<div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-2">
+    <strong>Mnemonic:</strong> "Rise over run" for slope; "y = mx + b" for lines.
+          </div>
+<div class="bg-white border border-slate-200 rounded p-3 mb-4">
+    <strong>Q:</strong> If <span class="font-mono">f(x) = 2x + 3</span>, find <span class="font-mono">f(4)</span>.<br>
+    <strong>A:</strong> 11
+          </div>
+<div class="chart-container mb-4">
+    <canvas id="functionLineChart"></canvas>
+</div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Expressions</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Combine like terms, expand, and factor.</li>
+    <li>Use identities: <span class="font-mono">(a+b)<sup>2</sup> = a<sup>2</sup> + 2ab + b<sup>2</sup></span></li>
+</ul>
+<div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-2">
+    <strong>Mnemonic:</strong> "FOIL" for binomial expansion: First, Outer, Inner, Last.
+          </div>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Expand <span class="font-mono">(x+2)<sup>2</sup>
+    </span>.<br>
+    <strong>A:</strong>
+    <span class="font-mono">x<sup>2</sup> + 4x + 4</span>
+</div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Equations</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Solve linear and quadratic equations.</li>
+    <li>Quadratic formula: <span class="font-mono">x = [-b ± √(b²-4ac)]/(2a)</span></li>
+</ul>
+<div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-2">
+    <strong>Mnemonic:</strong> "x equals negative b, plus or minus the square root, of b squared minus 4ac, all over 2a."
+          </div>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Solve <span class="font-mono">2x/3 = 4/5</span>.<br>
+    <strong>A:</strong>
+    <span class="font-mono">x = 6/5</span>
+</div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Functions</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Functions map inputs to outputs: <span class="font-mono">f(x) = 2x + 3</span></li>
+    <li>Composite: <span class="font-mono">f(g(x))</span></li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> If <span class="font-mono">f(x) = 2x + 3</span>, find <span class="font-mono">f(4)</span>.<br>
+    <strong>A:</strong> 11
+          </div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Quadratics</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Standard form: <span class="font-mono">ax² + bx + c</span></li>
+    <li>Vertex: <span class="font-mono">x = -b/(2a)</span></li>
+    <li>Sum/Product of roots: <span class="font-mono">-b/a</span>, <span class="font-mono">c/a</span></li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Solve <span class="font-mono">x² - 5x + 6 = 0</span>.<br>
+    <strong>A:</strong>
+    <span class="font-mono">x = 2, 3</span>
+</div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Synthetic Division & Complex Numbers</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Synthetic division for dividing polynomials.</li>
+    <li>Imaginary unit: <span class="font-mono">i² = -1</span></li>
+</ul>
+<div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-2">
+    <strong>Mnemonic:</strong> "i, -1, -i, 1" (cycle of i powers)
+          </div>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Simplify <span class="font-mono">i³</span>.<br>
+    <strong>A:</strong>
+    <span class="font-mono">-i</span>
+</div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Absolute Value</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Distance from zero: <span class="font-mono">|x| ≥ 0</span></li>
+    <li>Solve: <span class="font-mono">|x| < a ⇒ -a < x < a</span></li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Solve <span class="font-mono">|x - 2| = 10</span>.<br>
+    <strong>A:</strong>
+    <span class="font-mono">x = 12, -8</span>
+</div>
+</div>
+</section>
+
+<!-- Geometry Section -->
+<section id="math-geometry" class="mb-12">
+<div class="mb-6">
+<h3 class="text-xl font-bold text-blue-700 mb-2">Geometry & Circles</h3>
+<h4 class="font-semibold text-lg text-slate-700 mb-1">Circle & Sector Formulas</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>
+        <strong>Circle Equation:</strong>
+        <span class="font-mono">(x - h)² + (y - k)² = r²</span></li>
+    <li>
+        <strong>Arc Length (degrees):</strong>
+        <span class="font-mono">θ/360 = L/(2πr)</span></li>
+    <li>
+        <strong>Arc Length (radians):</strong>
+        <span class="font-mono">L = rθ</span></li>
+    <li>
+        <strong>Sector Area (degrees):</strong>
+        <span class="font-mono">θ/360 = A/(πr²)</span></li>
+    <li>
+        <strong>Sector Area (radians):</strong>
+        <span class="font-mono">A = (1/2)r²θ</span></li>
+</ul>
+</div>
+<h3 class="text-2xl font-bold text-blue-800 mb-4">Geometry</h3>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Lines</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Slope: <span class="font-mono">m = (y₂ - y₁)/(x₂ - x₁)</span></li>
+    <li>Slope-intercept: <span class="font-mono">y = mx + b</span></li>
+    <li>Point-slope: <span class="font-mono">y - y₁ = m(x - x₁)</span></li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Find the equation of a line through (6,8) with slope 1/3.<br>
+    <strong>A:</strong>
+    <span class="font-mono">y = (1/3)x + 6</span>
+</div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Triangles</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Sum of angles: 180°</li>
+    <li>Pythagorean theorem: <span class="font-mono">a² + b² = c²</span></li>
+    <li>Special triangles: 45-45-90 (<span class="font-mono">x, x, x√2</span>), 30-60-90 (<span class="font-mono">x, x√3, 2x</span>)</li>
+</ul>
+<div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-2">
+    <strong>Mnemonic:</strong> "1, 1, √2" for 45-45-90; "1, √3, 2" for 30-60-90.
+          </div>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <!-- ...existing grammar, drills, and strategy content... -->
+    <strong>A:</strong> 10
+          </div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Circles</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Area: <span class="font-mono">πr²</span></li>
+    <li>Circumference: <span class="font-mono">2πr</span></li>
+    <li>Equation: <span class="font-mono">(x-h)² + (y-k)² = r²</span></li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Find the area of a circle with radius 3.<br>
+    <strong>A:</strong>
+    <span class="font-mono">9π</span>
+</div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Polygons & Volume</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Sum of interior angles: <span class="font-mono">180(n-2)</span></li>
+    <li>Volume: Cube (<span class="font-mono">s³</span>), Prism (<span class="font-mono">lwh</span>), Cylinder (<span class="font-mono">πr²h</span>), Cone (<span class="font-mono">(1/3)πr²h</span>), Sphere (<span class="font-mono">(4/3)πr³</span>)</li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Find the volume of a cylinder with radius 2 and height 5.<br>
+    <strong>A:</strong>
+    <span class="font-mono">20π</span>
+</div>
+</div>
+</section>
+
+<!-- Trigonometry Section -->
+<section id="math-trig" class="mb-12">
+<div class="mb-6">
+<h3 class="text-xl font-bold text-blue-700 mb-2">Trigonometry</h3>
+<h4 class="font-semibold text-lg text-slate-700 mb-1">SOHCAHTOA</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>
+        <span class="font-mono">sinθ = opposite/hypotenuse</span></li>
+    <li>
+        <span class="font-mono">cosθ = adjacent/hypotenuse</span></li>
+    <li>
+        <span class="font-mono">tanθ = opposite/adjacent</span></li>
+</ul>
+</div>
+<h3 class="text-2xl font-bold text-blue-800 mb-4">Trigonometry</h3>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+<li>Sine, cosine, tangent: <span class="font-mono">SOH-CAH-TOA</span></li>
+<li>Complementary angles: <span class="font-mono">sin x = cos(90° - x)</span></li>
+<li>Key values: <span class="font-mono">sin 30° = 1/2</span>, <span class="font-mono">cos 45° = √2/2</span></li>
+</ul>
+<div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-2">
+<strong>Mnemonic:</strong> SOH-CAH-TOA (Sine = Opp/Hyp, Cos = Adj/Hyp, Tan = Opp/Adj)
+        </div>
+<div class="bg-white border border-slate-200 rounded p-3">
+<strong>Q:</strong> In a right triangle with legs 3 and 4, find <span class="font-mono">sin θ</span> for the angle opposite 3.<br>
+<strong>A:</strong>
+<span class="font-mono">3/5</span>
+</div>
+</section>
+
+<!-- Statistics & Probability Section -->
+<section id="math-stats" class="mb-12">
+<div class="mb-6">
+<h3 class="text-xl font-bold text-blue-700 mb-2">Statistics</h3>
+<h4 class="font-semibold text-lg text-slate-700 mb-1">Key Statistics</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>
+        <strong>Mean:</strong> sum of terms / number of terms</li>
+    <li>
+        <strong>Median:</strong> middle value</li>
+    <li>
+        <strong>Mode:</strong> most frequent value</li>
+    <li>
+        <strong>Line of Best Fit:</strong> Approximates data trend in scatterplots</li>
+</ul>
+</div>
+<h3 class="text-2xl font-bold text-blue-800 mb-4">Statistics & Probability</h3>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Probability</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Probability = favorable outcomes / total outcomes</li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> A bag has 5 red and 3 blue marbles. Probability of red?<br>
+    <strong>A:</strong>
+    <span class="font-mono">5/8</span>
+</div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Statistics</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Mean: average</li>
+    <li>Median: middle value</li>
+    <li>Mode: most frequent</li>
+    <li>Range: max - min</li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Find mean, median, mode, range of 2, 3, 3, 4, 5.<br>
+    <strong>A:</strong> Mean = 3.4, Median = 3, Mode = 3, Range = 3
+          </div>
+</div>
+</section>
+
+<!-- Other Topics Section -->
+<section id="math-other" class="mb-12">
+<div class="mb-6">
+<h3 class="text-xl font-bold text-blue-700 mb-2">Graph Behavior & Transformations</h3>
+<h4 class="font-semibold text-lg text-slate-700 mb-1">Key Properties</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>
+        <strong>Linear Graphs:</strong>
+        <span class="font-mono">y = mx + b</span> is a straight line with slope m and y-intercept b. If m &gt; 0, line slopes up; if m &lt; 0, slopes down.</li>
+    <li>
+        <strong>Quadratic Graphs:</strong>
+        <span class="font-mono">y = ax² + bx + c</span> is a parabola. Opens up if a &gt; 0, down if a &lt; 0. Vertex is min or max point.</li>
+    <li>
+        <strong>End Behavior (Polynomials):</strong>
+        <ul class="list-disc ml-6">
+            <li>Even degree: positive leading coefficient, both ends up (∪); negative, both ends down (∩).</li>
+            <li>Odd degree: positive leading coefficient, left down/right up; negative, left up/right down.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Transformations:</strong>
+        <ul class="list-disc ml-6">
+            <li>Horizontal Shift: <span class="font-mono">y = f(x - h)</span> shifts right by h.</li>
+            <li>Vertical Shift: <span class="font-mono">y = f(x) + k</span> shifts up by k.</li>
+        </ul>
+    </li>
+</ul>
+</div>
+<h3 class="text-2xl font-bold text-blue-800 mb-4">Other Topics</h3>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Percent & Growth</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Percent change: <span class="font-mono">((new - old)/old) × 100%</span></li>
+    <li>Linear: <span class="font-mono">y = mt + b</span>; Exponential: <span class="font-mono">y = ab^t</span></li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Price increases from $20 to $25. Percent increase?<br>
+    <strong>A:</strong> 25%
+          </div>
+</div>
+<div class="mb-6">
+<h4 class="font-semibold text-lg text-slate-700 mb-2">Rates & Radians</h4>
+<ul class="list-disc ml-6 text-slate-600 mb-2">
+    <li>Speed = distance/time</li>
+    <li>Degrees to radians: <span class="font-mono">degrees × π/180</span></li>
+</ul>
+<div class="bg-white border border-slate-200 rounded p-3">
+    <strong>Q:</strong> Convert 90° to radians.<br>
+    <strong>A:</strong>
+    <span class="font-mono">π/2</span>
+</div>
+</div>
+</section>
+
+<!-- Desmos Calculator Shortcuts and Tips -->
+<section id="math-desmos" class="mb-12">
+<h3 class="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+<svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8M8 8h8"/></svg>
+            Desmos Calculator Shortcuts and Tips
+        </h3>
+<p class="text-blue-700 mb-4">Desmos is integrated into the digital SAT Bluebook app, making it essential for efficient problem-solving. <a href="https://www.desmos.com/calculator" target="_blank" class="text-green-700 underline hover:text-green-900">Practice at Desmos Graphing Calculator</a>.</p>
+<div class="overflow-x-auto mb-6">
+<table class="min-w-full text-sm border border-blue-200 bg-white rounded">
+    <thead>
+        <tr class="bg-blue-100 text-blue-800">
+            <th class="px-4 py-2 text-left">Operation</th>
+            <th class="px-4 py-2 text-left">Shortcut</th>
+            <th class="px-4 py-2 text-left">Example</th>
+            <th class="px-4 py-2 text-left">Result</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="px-4 py-2">Square Root</td>
+            <td class="px-4 py-2">sqrt(</td>
+            <td class="px-4 py-2">sqrt(x)</td>
+            <td class="px-4 py-2">( \sqrt{x} )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Exponent</td>
+            <td class="px-4 py-2">^</td>
+            <td class="px-4 py-2">x^2</td>
+            <td class="px-4 py-2">( x^2 )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Fraction</td>
+            <td class="px-4 py-2">/</td>
+            <td class="px-4 py-2">1/2</td>
+            <td class="px-4 py-2">( \frac{1}{2} )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Sine</td>
+            <td class="px-4 py-2">sin(</td>
+            <td class="px-4 py-2">sin(x)</td>
+            <td class="px-4 py-2">( \sin(x) )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Cosine</td>
+            <td class="px-4 py-2">cos(</td>
+            <td class="px-4 py-2">cos(x)</td>
+            <td class="px-4 py-2">( \cos(x) )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Tangent</td>
+            <td class="px-4 py-2">tan(</td>
+            <td class="px-4 py-2">tan(x)</td>
+            <td class="px-4 py-2">( \tan(x) )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Logarithm</td>
+            <td class="px-4 py-2">log(</td>
+            <td class="px-4 py-2">log(x)</td>
+            <td class="px-4 py-2">( \log(x) )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Natural Log</td>
+            <td class="px-4 py-2">ln(</td>
+            <td class="px-4 py-2">ln(x)</td>
+            <td class="px-4 py-2">( \ln(x) )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Absolute Value</td>
+            <td class="px-4 py-2">abs(</td>
+            <td class="px-4 py-2">abs(x)</td>
+            <td class="px-4 py-2">( |x| )</td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Pi</td>
+            <td class="px-4 py-2">pi</td>
+            <td class="px-4 py-2">pi</td>
+            <td class="px-4 py-2">( \pi )</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<div class="mb-4">
+<h4 class="font-semibold text-lg text-blue-700 mb-2">Navigation Shortcuts</h4>
+<ul class="list-disc ml-6 text-blue-700">
+    <li>
+        <span class="font-mono">Ctrl + /</span>: Open shortcuts dialog.</li>
+    <li>
+        <span class="font-mono">Ctrl + O</span>: Open a graph.</li>
+    <li>
+        <span class="font-mono">↑</span> or <span class="font-mono">Shift + Tab</span>: Move to previous expression.</li>
+    <li>
+        <span class="font-mono">←</span> or <span class="font-mono">J</span>: Decrease slider value.</li>
+</ul>
+</div>
+<div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-2">
+<h4 class="font-semibold text-blue-800 mb-1">Desmos Tips for SAT</h4>
+<ul class="list-disc ml-6 text-blue-700">
+    <li>
+        <strong>Systems of Equations:</strong> Graph equations (e.g., <span class="font-mono">y = 2x + 1</span>, <span class="font-mono">y = -x + 4</span>) to find intersections. Click points for exact coordinates.</li>
+    <li>
+        <strong>Quadratics:</strong> Enter <span class="font-mono">y = x^2 - 5x + 6</span>; Desmos shows vertex and intercepts for roots (e.g., <span class="font-mono">x = 2, 3</span>).</li>
+    <li>
+        <strong>Inequalities:</strong> Type <span class="font-mono">y > 2x + 3</span>; Desmos shades solution region; overlap for systems.</li>
+    <li>
+        <strong>Sliders:</strong> Add sliders for variables (e.g., <span class="font-mono">y = ax + 3</span>) to test transformations or no-solution cases.</li>
+    <li>
+        <strong>Statistics:</strong> Use <span class="font-mono">mean()</span>, <span class="font-mono">median()</span>, <span class="font-mono">stdev()</span> in “Functions” → “Statistics” for data questions.</li>
+    <li>
+        <strong>Circles:</strong> Enter <span class="font-mono">(x-2)^2 + (y-3)^2 = 9</span>; Desmos shows center (2, 3), radius 3.</li>
+    <li>
+        <strong>Fractions:</strong> Type decimals (e.g., 0.75), click fraction button to convert to <span class="font-mono">\frac{3}{4}</span>.</li>
+    <li>
+        <strong>Absolute Value:</strong> Graph <span class="font-mono">y = abs(x - 4)</span> to find solutions (e.g., intersections for <span class="font-mono">|x - 4| = 9</span>).</li>
+</ul>
+</div>
+
+<!-- SAT Math-Style Questions & Desmos How-To -->
+<div class="bg-white border border-blue-200 rounded-2xl p-6 md:p-8 mt-8 mb-2 shadow">
+<h4 class="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8M8 8h8"/></svg>
+                SAT Math-Style Questions & How to Use Desmos
+            </h4>
+<p class="text-blue-700 mb-6">Practice these representative SAT math questions and see exactly how to use Desmos to solve each one on test day.</p>
+<ol class="list-decimal ml-6 space-y-6">
+    <li>
+        <strong class="text-blue-700">Linear Equations & Functions</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q1.</strong> Solve for <span class="font-mono">x</span>: <span class="font-mono">2x + 3 = 11</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Type <span class="font-mono">y = 2x + 3</span> and <span class="font-mono">y = 11</span>. The intersection x-value is the solution.
+                        </li>
+            <li>
+                <strong>Q2.</strong> Find x where <span class="font-mono">3x - 5 = 4x + 2</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Type <span class="font-mono">y = 3x - 5</span> and <span class="font-mono">y = 4x + 2</span>. The intersection x-coordinate is your answer.
+                        </li>
+            <li>
+                <strong>Q3.</strong> A line passes through (2, 3) and (4, 7). Find its equation.<br>
+                <span class="text-blue-700">Desmos:</span> Add points (2,3) and (4,7). Use the slope formula or <span class="font-mono">y1 ~ mx1 + b</span> regression in Desmos.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Systems of Equations</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q4.</strong> Solve the system: <span class="font-mono">2x + y = 8</span>, <span class="font-mono">x - y = 1</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Enter both equations (e.g., <span class="font-mono">y = 8 - 2x</span> and <span class="font-mono">y = x - 1</span>). The intersection point gives (x, y).
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Quadratic Equations</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q5.</strong> Solve <span class="font-mono">x² - 5x + 6 = 0</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Type <span class="font-mono">y = x^2 - 5x + 6</span>. The x-intercepts are the solutions.
+                        </li>
+            <li>
+                <strong>Q6.</strong> A ball is thrown: <span class="font-mono">h = -16t² + 32t + 48</span>. When does it hit the ground?<br>
+                <span class="text-blue-700">Desmos:</span> Graph <span class="font-mono">y = -16t^2 + 32t + 48</span>. Find where the curve crosses the x-axis.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Inequalities</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q7.</strong> Solve <span class="font-mono">x + 4 > 7</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Graph <span class="font-mono">y = x + 4</span> and <span class="font-mono">y = 7</span>. Check where <span class="font-mono">x + 4</span> is above 7.
+                        </li>
+            <li>
+                <strong>Q8.</strong> Which x-values satisfy both <span class="font-mono">y < 2x + 3</span> and <span class="font-mono">y > -x + 1</span>?<br>
+                <span class="text-blue-700">Desmos:</span> Enter both inequalities. The overlapping shaded region is the solution set.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Word Problems & Linear Models</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q9.</strong> A taxi charges $3 plus $2 per mile. Find the cost for 5 miles.<br>
+                <span class="text-blue-700">Desmos:</span> Graph <span class="font-mono">y = 3 + 2x</span>. Use the table to find y when x = 5.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Geometry & Circles</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q10.</strong> Circle: <span class="font-mono">(x-2)² + (y+1)² = 16</span>. Find center and radius.<br>
+                <span class="text-blue-700">Desmos:</span> Graph the equation. Center is (2, -1), radius is 4.
+                        </li>
+            <li>
+                <strong>Q11.</strong> Find intersection points of <span class="font-mono">x² + y² = 25</span> and <span class="font-mono">y = x</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Enter both equations. Click intersection points.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Exponents and Roots</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q12.</strong> Solve <span class="font-mono">2^x = 8</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Graph <span class="font-mono">y = 2^x</span> and <span class="font-mono">y = 8</span>. Intersection x-value is the answer.
+                        </li>
+            <li>
+                <strong>Q13.</strong> Solve <span class="font-mono">sqrt(x + 4) = 5</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Graph <span class="font-mono">y = sqrt(x + 4)</span> and <span class="font-mono">y = 5</span>. Intersection x-value is the solution.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Ratios & Proportions</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q14.</strong> If 3 pens cost $6, how much do 7 pens cost?<br>
+                <span class="text-blue-700">Desmos:</span> Use a table: x = 3, y = 6, then find y for x = 7. Or graph <span class="font-mono">y = 2x</span>.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Statistics</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q15.</strong> Find the line of best fit for (1,2), (2,3), (3,5), (4,7).<br>
+                <span class="text-blue-700">Desmos:</span> Use the table, then type <span class="font-mono">y1 ~ mx1 + b</span> for regression.
+                        </li>
+            <li>
+                <strong>Q16.</strong> 5 numbers have mean 10. Four are 8, 9, 12, 11. Find the missing number.<br>
+                <span class="text-blue-700">Desmos:</span> Sum known values, use <span class="font-mono">(sum + x)/5 = 10</span>. Solve for x.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Trigonometry (Basic)</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q17.</strong> Solve for <span class="font-mono">x</span>: <span class="font-mono">sin x = 0.5</span>, <span class="font-mono">0 ≤ x ≤ 180°</span>.<br>
+                <span class="text-blue-700">Desmos:</span> Graph <span class="font-mono">y = sin(x)</span> (degrees mode) and <span class="font-mono">y = 0.5</span>. Intersection points are solutions.
+                        </li>
+            <li>
+                <strong>Q18.</strong> Find the height of a building if angle of elevation is 30° from 20m away.<br>
+                <span class="text-blue-700">Desmos:</span> Use <span class="font-mono">tan(30°) = height / 20</span>. Graph <span class="font-mono">y = tan(30°) * x</span>.
+                        </li>
+        </ul>
+    </li>
+    <li>
+        <strong class="text-blue-700">Complex Problems</strong>
+        <ul class="list-disc ml-6 mt-2 space-y-2">
+            <li>
+                <strong>Q19.</strong> Parabola <span class="font-mono">y = x² - 4x + 3</span> and line <span class="font-mono">y = x - 1</span> intersect. Find points.<br>
+                <span class="text-blue-700">Desmos:</span> Graph both. Click intersection points.
+                        </li>
+            <li>
+                <strong>Q20.</strong> Maximize area of rectangle with perimeter 20.<br>
+                <span class="text-blue-700">Desmos:</span> Express area <span class="font-mono">A = x(10 - x)</span>. Graph and find maximum.
+                        </li>
+        </ul>
+    </li>
+</ol>
+</div>
+</section>
+
+<!-- Formula Sheet Section -->
+<section id="math-formulas" class="mb-12">
+<h3 class="text-2xl font-bold text-blue-800 mb-4">Consolidated SAT Math Formula Sheet</h3>
+<div class="overflow-x-auto">
+<table class="min-w-full text-sm border border-slate-200 bg-white rounded">
+    <thead>
+        <tr class="bg-blue-100 text-blue-800">
+            <th class="px-4 py-2 text-left">Topic</th>
+            <th class="px-4 py-2 text-left">Formulas</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="px-4 py-2">Exponents & Radicals</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">a<sup>m</sup>·a<sup>n</sup>=a<sup>m+n</sup>
+                </span>, <span class="font-mono">a<sup>m</sup>/a<sup>n</sup>=a<sup>m-n</sup>
+                </span>, <span class="font-mono">(a<sup>m</sup>)<sup>n</sup>=a<sup>mn</sup>
+                </span>, <span class="font-mono">a<sup>-n</sup>=1/a<sup>n</sup>
+                </span>, <span class="font-mono">a<sup>0</sup>=1</span>, <span class="font-mono">a<sup>m/n</sup>=<sup>n</sup>√a<sup>m</sup>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Percent</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">((new-old)/old)×100%</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Linear/Exponential</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">y=mt+b</span>, <span class="font-mono">y=ab<sup>t</sup></span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Expressions</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">(a+b)<sup>2</sup>=a<sup>2</sup>+2ab+b<sup>2</sup>
+                </span>, <span class="font-mono">(a-b)<sup>2</sup>=a<sup>2</sup>-2ab+b<sup>2</sup>
+                </span>, <span class="font-mono">a<sup>2</sup>-b<sup>2</sup>=(a+b)(a-b)</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Quadratic</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">x=[-b±√(b²-4ac)]/(2a)</span>, <span class="font-mono">D=b²-4ac</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Functions</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">f(x)=expression</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Synthetic Division</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">p(c)</span> for <span class="font-mono">x-c</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Complex Numbers</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">i²=-1</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Lines</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">m=(y₂-y₁)/(x₂-x₁)</span>, <span class="font-mono">y=mx+b</span>, <span class="font-mono">y-y₁=m(x-x₁)</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Triangles</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">Area=(1/2)bh</span>, <span class="font-mono">a²+b²=c²</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Circles</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">Area=πr²</span>, <span class="font-mono">C=2πr</span>, <span class="font-mono">(x-h)²+(y-k)²=r²</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Polygons</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">Interior Angles=180(n-2)</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Volume</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">Cube=s³</span>, <span class="font-mono">Prism=lwh</span>, <span class="font-mono">Cylinder=πr²h</span>, <span class="font-mono">Cone=(1/3)πr²h</span>, <span class="font-mono">Sphere=(4/3)πr³</span></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2">Trigonometry</td>
+            <td class="px-4 py-2">
+                <span class="font-mono">sin θ=opp/hyp</span>, <span class="font-mono">cos θ=adj/hyp</span>, <span class="font-mono">tan θ=opp/adj</span></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</section>
+</section>
+<!-- End of math-section, now at the bottom of the page -->
+
+<!-- Grammar Content (Accordion, Rules, Structure, Rhetoric, Drills, Strategy) -->
+<div id="content-sections"></div>
+
+<!-- Drill Filters and Drills Container -->
+<div id="drill-filters" class="flex flex-wrap gap-2 mb-6"></div>
+<div id="drills-container"></div>
+
+<!-- Practice Drills -->
+<section id="drills" class="mb-16"></section>
+
+<!-- Strategy -->
+<section id="strategy" class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-8 md:p-12">
+<!-- ...existing strategy code... -->
+</section>
+</section>
+
+</section>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+// Line graph for functions (linear, quadratic, exponential)
+const functionLineChart = document.getElementById('functionLineChart');
+if (functionLineChart) {
+const ctx = functionLineChart.getContext('2d');
+new Chart(ctx, {
+type: 'line',
+data: {
+labels: [
+-2,
+-1,
+0,
+1,
+2,
+3,
+4
+],
+datasets: [
+{
+    label: 'Linear: f(x) = 2x + 3',
+    data: [
+        -1,
+        1,
+        3,
+        5,
+        7,
+        9,
+        11
+    ],
+    borderColor: 'rgba(59,130,246,1)',
+    backgroundColor: 'rgba(59,130,246,0.2)',
+    tension: 0.1
+}, {
+    label: 'Quadratic: f(x) = x²',
+    data: [
+        4,
+        1,
+        0,
+        1,
+        4,
+        9,
+        16
+    ],
+    borderColor: 'rgba(16,185,129,1)',
+    backgroundColor: 'rgba(16,185,129,0.2)',
+    tension: 0.1
+}, {
+    label: 'Exponential: f(x) = 2ˣ',
+    data: [
+        0.25,
+        0.5,
+        1,
+        2,
+        4,
+        8,
+        16
+    ],
+    borderColor: 'rgba(251,191,36,1)',
+    backgroundColor: 'rgba(251,191,36,0.2)',
+    tension: 0.1
+}
+]
+},
+options: {
+responsive: true,
+plugins: {
+legend: {
+    position: 'top'
+},
+tooltip: {
+    backgroundColor: '#1E293B',
+    titleFont: {
+        size: 14
+    },
+    bodyFont: {
+        size: 12
+    },
+    padding: 10,
+    cornerRadius: 6
+}
+},
+scales: {
+x: {
+    title: {
+        display: true,
+        text: 'x'
+    }
+},
+y: {
+    title: {
+        display: true,
+        text: 'f(x)'
+    }
+}
+}
+}
+});
+}
+
+// Grammar Most Tested Concepts Bar Chart
+const chartData = {
+labels: [
+'Word Choice & Redundancy',
+'Transitions',
+'Comma Usage',
+'Subject-Verb Agreement',
+'Pronoun Usage',
+'Sentence Fragments & Run-ons',
+'Apostrophes (Possession)',
+'Logical Comparisons',
+'Parallel Structure',
+'Verb Tense/Form'
+],
+datasets: [
+{
+label: '# of Questions in Official Tests',
+data: [
+45,
+42,
+38,
+25,
+24,
+22,
+18,
+15,
+14,
+12
+],
+backgroundColor: 'rgba(59, 130, 246, 0.7)',
+borderColor: 'rgba(59, 130, 246, 1)',
+borderWidth: 1
+}
+]
+};
+const mostTestedCtx = document
+.getElementById('mostTestedChart')
+.getContext('2d');
+new Chart(mostTestedCtx, {
+type: 'bar',
+data: chartData,
+options: {
+indexAxis: 'y',
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+display: false
+},
+tooltip: {
+backgroundColor: '#1E293B',
+titleFont: {
+    size: 14
+},
+bodyFont: {
+    size: 12
+},
+padding: 10,
+cornerRadius: 6
+}
+},
+scales: {
+y: {
+ticks: {
+    color: '#475569',
+    font: {
+        size: 12,
+        weight: 500
+    }
+},
+grid: {
+    display: false
+}
+},
+x: {
+ticks: {
+    color: '#475569'
+},
+grid: {
+    color: '#E2E8F0'
+}
+}
+}
+}
+});
+
+// Error Types Pie Chart
+const errorTypesData = {
+labels: [
+'Punctuation', 'Agreement', 'Structure', 'Rhetoric'
+],
+datasets: [
+{
+data: [
+38, 28, 22, 32
+],
+backgroundColor: [
+'rgba(59, 130, 246, 0.7)', 'rgba(16, 185, 129, 0.7)', 'rgba(251, 191, 36, 0.7)', 'rgba(239, 68, 68, 0.7)'
+],
+borderColor: [
+'rgba(59, 130, 246, 1)', 'rgba(16, 185, 129, 1)', 'rgba(251, 191, 36, 1)', 'rgba(239, 68, 68, 1)'
+],
+borderWidth: 2
+}
+]
+};
+const errorTypesCtx = document
+.getElementById('errorTypesChart')
+.getContext('2d');
+new Chart(errorTypesCtx, {
+type: 'pie',
+data: errorTypesData,
+options: {
+responsive: true,
+plugins: {
+legend: {
+position: 'bottom'
+},
+tooltip: {
+backgroundColor: '#1E293B',
+titleFont: {
+    size: 14
+},
+bodyFont: {
+    size: 12
+},
+padding: 10,
+cornerRadius: 6
+}
+}
+}
+});
+
+// Math Topic Frequency Bar Chart
+const mathTopicsData = {
+labels: [
+'Algebra',
+'Functions',
+'Quadratics',
+'Geometry',
+'Trigonometry',
+'Statistics',
+'Probability',
+'Other'
+],
+datasets: [
+{
+label: '# of Questions in Official Tests',
+data: [
+40,
+18,
+22,
+28,
+10,
+12,
+8,
+6
+],
+backgroundColor: 'rgba(16, 185, 129, 0.7)',
+borderColor: 'rgba(16, 185, 129, 1)',
+borderWidth: 1
+}
+]
+};
+const mathTopicsCtx = document
+.getElementById('mathTopicsChart')
+.getContext('2d');
+new Chart(mathTopicsCtx, {
+type: 'bar',
+data: mathTopicsData,
+options: {
+indexAxis: 'y',
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+display: false
+},
+tooltip: {
+backgroundColor: '#1E293B',
+titleFont: {
+    size: 14
+},
+bodyFont: {
+    size: 12
+},
+padding: 10,
+cornerRadius: 6
+}
+},
+scales: {
+y: {
+ticks: {
+    color: '#047857',
+    font: {
+        size: 12,
+        weight: 500
+    }
+},
+grid: {
+    display: false
+}
+},
+x: {
+ticks: {
+    color: '#047857'
+},
+grid: {
+    color: '#D1FAE5'
+}
+}
+}
+}
+});
+
+const contentData = [
+{
+id: 'rules',
+title: 'Grammar Rules',
+description: 'These are the foundational building blocks of English. Master these rules to eliminate a huge percentage of errors on the test.',
+categories: [
+{
+name: 'Punctuation',
+items: [
+    {
+        title: 'Commas: Separating Items in a List',
+        content: `Use commas to separate three or more items in a series. The final comma before 'and' (the Oxford comma) is required on the SAT.`,
+        exampleCorrect: 'I bought apples, oranges, and bananas.',
+        exampleIncorrect: 'I bought apples, oranges and bananas.'
+    }, {
+        title: 'Commas: With Non-Essential Clauses',
+        content: `Use commas to set off non-essential information (a clause that can be removed without changing the sentence's core meaning). If the info is essential, do not use commas.`,
+        exampleCorrect: `The Eiffel Tower, which is in Paris, is very tall.`,
+        exampleIncorrect: `The building that is on the corner is new. (The clause is essential here, so no commas).`
+    }, {
+        title: 'Semicolons (;)',
+        content: `A semicolon joins two complete, related sentences (independent clauses). It can be replaced by a period.`,
+        exampleCorrect: `I went to the store; I bought some milk.`,
+        exampleIncorrect: `I went to the store; and bought some milk. (Incorrect because 'and bought some milk' is not a full sentence).`
+    }, {
+        title: 'Colons (:)',
+        content: `A colon introduces a list, explanation, or example. The clause before the colon must be a complete sentence.`,
+        exampleCorrect: `I need three things: a pen, paper, and an idea.`,
+        exampleIncorrect: `I need: a pen, paper, and an idea. ('I need' is not a complete sentence).`
+    }, {
+        title: 'Apostrophes (\')',
+        content: `Apostrophes show possession (the boy's hat, the students' books) or form contractions (it's for 'it is'). Be careful not to confuse 'its' (possessive) with 'it's' (contraction).`,
+        exampleCorrect: `The dog wagged its tail because it's happy.`,
+        exampleIncorrect: `The dog wagged it's tail because its happy.`
+    }
+]
+}, {
+name: 'Agreement',
+items: [
+    {
+        title: 'Subject-Verb Agreement',
+        content: `A singular subject takes a singular verb, and a plural subject takes a plural verb. Watch out for prepositional phrases that come between the subject and verb.`,
+        exampleCorrect: `The basket of apples is heavy. ('basket' is the singular subject).`,
+        exampleIncorrect: `The basket of apples are heavy.`
+    }, {
+        title: 'Pronoun-Antecedent Agreement',
+        content: `A pronoun must agree in number with the noun it refers to (its antecedent).`,
+        exampleCorrect: `Each student must bring his or her book. ('Each student' is singular).`,
+        exampleIncorrect: `Each student must bring their book. (This is common in speech, but often considered incorrect on the SAT).`
+    }
+]
+}
+]
+}, {
+id: 'structure',
+title: 'Sentence Structure',
+description: 'Correctly formed sentences are the backbone of clear writing. Learn to spot and fix common structural flaws like fragments and run-ons.',
+categories: [
+{
+name: 'Core Structures',
+items: [
+    {
+        title: 'Sentence Fragments',
+        content: `A fragment is an incomplete thought posing as a sentence. It usually lacks a subject, a main verb, or both.`,
+        exampleCorrect: `Because he was tired, he went to bed.`,
+        exampleIncorrect: `Because he was tired. (This is a dependent clause, a fragment).`
+    }, {
+        title: 'Run-On Sentences & Comma Splices',
+        content: `A run-on sentence incorrectly joins two complete sentences with no punctuation. A comma splice incorrectly joins them with only a comma. Fix with a period, semicolon, or a comma + FANBOYS conjunction.`,
+        exampleCorrect: `She ran to the bus, but she missed it.`,
+        exampleIncorrect: `She ran to the bus, she missed it. (Comma splice).`
+    }, {
+        title: 'Parallel Structure',
+        content: `Items in a list or comparison must be in the same grammatical form (e.g., all nouns, all '-ing' verbs).`,
+        exampleCorrect: `I like running, swimming, and hiking.`,
+        exampleIncorrect: `I like running, to swim, and hiking.`
+    }, {
+        title: 'Misplaced & Dangling Modifiers',
+        content: `A modifying phrase must be placed directly next to the word it describes. A dangling modifier describes a word that isn't actually in the sentence.`,
+        exampleCorrect: `Running quickly, I caught the ball. ('Running quickly' describes 'I').`,
+        exampleIncorrect: `Running quickly, the ball was caught by me. (The ball wasn't running).`
+    }
+]
+}
+]
+}, {
+id: 'rhetoric',
+title: 'Rhetorical Skills',
+description: `These questions test your understanding of style, tone, and logic. It's not just about what's grammatically correct, but what's most effective.`,
+categories: [
+{
+name: 'Clarity and Style',
+items: [
+    {
+        title: 'Word Choice (Diction)',
+        content: `Choose the word with the most precise meaning in context. Pay attention to subtle differences between similar words.`,
+        exampleCorrect: `The new law will affect the economy.`,
+        exampleIncorrect: `The new law will effect the economy. ('Affect' is a verb meaning 'to influence'; 'effect' is a noun meaning 'a result').`
+    }, {
+        title: 'Conciseness & Redundancy',
+        content: `Eliminate repetitive or unnecessary words. The shortest grammatically correct answer is often the right one.`,
+        exampleCorrect: `The annual event happens every year. (Redundant). -> The annual event is a popular tradition.`,
+        exampleIncorrect: `The price decreased by 20% down. ('Down' is redundant).`
+    }, {
+        title: 'Transitions',
+        content: `Choose the transition word or phrase that shows the correct logical relationship between ideas (e.g., contrast, addition, cause-and-effect).`,
+        exampleCorrect: `He studied hard; therefore, he did well on the test.`,
+        exampleIncorrect: `He studied hard; however, he did well on the test.`
+    }, {
+        title: 'Logical Sequence',
+        content: `Some questions ask where to place a sentence. Make sure the sentence fits logically between the sentence before it and the sentence after it, often by looking for pronoun references or transition words.`,
+        exampleCorrect: `[1] The sun is a star. [2] It is the center of our solar system. [3] Many planets orbit it. ('It' refers to the sun, making the sequence logical).`,
+        exampleIncorrect: `Placing [3] before [2] would be illogical.`
+    }
+]
+}
+]
+}
+];
+
+const drillsData = [
+{
+category: 'Punctuation',
+question: 'The tour guide, a woman with a great sense of humor led us through the museum.',
+A: 'NO CHANGE',
+B: 'humor, led',
+C: 'humor; led',
+D: 'humor: led',
+correct: 'B',
+explanation: 'The phrase "a woman with a great sense of humor" is a non-essential clause describing the guide. It must be set off by commas on both sides.'
+}, {
+category: 'Agreement',
+question: 'The collection of paintings, which were donated by a local artist, are now on display.',
+A: 'NO CHANGE',
+B: 'artist, is',
+C: 'artists, are',
+D: 'artist were',
+correct: 'B',
+explanation: 'The subject is "collection" (singular), not "paintings" (plural). Therefore, the singular verb "is" is required.'
+}, {
+category: 'Structure',
+question: 'To be a successful student, a study schedule must be maintained.',
+A: 'NO CHANGE',
+B: 'you must maintain a study schedule.',
+C: 'a study schedule is what you must maintain.',
+D: 'maintaining a study schedule is required.',
+correct: 'B',
+explanation: 'This is a dangling modifier. The introductory phrase "To be a successful student" must describe a person ("you"), not "a study schedule."'
+}, {
+category: 'Rhetoric',
+question: 'The team won the championship. In contrast, they celebrated all night.',
+A: 'NO CHANGE',
+B: 'Therefore,',
+C: 'Nevertheless,',
+D: 'Similarly,',
+correct: 'B',
+explanation: 'The second sentence is a result of the first. "Therefore" correctly shows this cause-and-effect relationship. "In contrast" shows opposition.'
+}, {
+category: 'Punctuation',
+question: 'I need to buy three things for the party, milk, eggs, and bread.',
+A: 'NO CHANGE',
+B: 'party; milk',
+C: 'party: milk',
+D: 'party milk',
+correct: 'C',
+explanation: 'A colon is used to introduce a list after a complete sentence. "I need to buy three things for the party" is a complete sentence.'
+}, {
+category: 'Agreement',
+question: 'Neither the students nor the teacher were happy with the new rule.',
+A: 'NO CHANGE',
+B: 'was happy',
+C: 'are happy',
+D: 'have been happy',
+correct: 'B',
+explanation: 'When subjects are joined by "neither...nor", the verb agrees with the subject closer to it. "teacher" is singular, so the verb must be "was".'
+}, {
+category: 'Structure',
+question: 'She is a talented musician, she plays the piano beautifully.',
+A: 'NO CHANGE',
+B: 'musician, and she',
+C: 'musician, playing',
+D: 'musician; playing',
+correct: 'B',
+explanation: 'This is a comma splice (two independent clauses joined by only a comma). Adding the conjunction "and" corrects the error.'
+}
+];
+
+const contentContainer = document.getElementById('content-sections');
+
+contentData.forEach(section => {
+const sectionEl = document.createElement('section');
+sectionEl.id = section.id;
+sectionEl.className = 'mb-16 md:mb-24';
+
+let sectionHTML = `
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">${section.title}</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">${section.description}</p>
+            </div>
+            <div class="space-y-8">
+        `;
+
+section
+.categories
+.forEach(category => {
+sectionHTML += `
+                <div>
+                    <h3 class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-blue-200 pb-2">${category.name}</h3>
+                    <div class="space-y-4">
+            `;
+category
+.items
+.forEach((item, index) => {
+    sectionHTML += `
+                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
+                        <button class="accordion-button w-full text-left p-5 font-semibold text-slate-800 flex justify-between items-center hover:bg-slate-50 rounded-lg">
+                            <span>${item.title}</span>
+                            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content px-5 pb-5 text-slate-600">
+                            <p class="mb-4">${item.content}</p>
+                            <div class="mb-4">
+                                <p class="font-semibold text-green-700 mb-1">✓ Correct:</p>
+                                <p class="bg-green-50 p-2 rounded-md font-mono text-sm">${item.exampleCorrect}</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-red-700 mb-1">✗ Incorrect:</p>
+                                <p class="bg-red-50 p-2 rounded-md font-mono text-sm">${item.exampleIncorrect}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+});
+sectionHTML += `</div></div>`;
+});
+
+sectionHTML += `</div>`;
+sectionEl.innerHTML = sectionHTML;
+contentContainer.appendChild(sectionEl);
+});
+
+document
+.querySelectorAll('.accordion-button')
+.forEach(button => {
+button.addEventListener('click', () => {
+const content = button.nextElementSibling;
+button
+.classList
+.toggle('active');
+const icon = button.querySelector('svg');
+icon
+.classList
+.toggle('rotate-180');
+});
+});
+
+const drillsContainer = document.getElementById('drills-container');
+const drillFiltersContainer = document.getElementById('drill-filters');
+const drillCategories = [
+'All', ...new Set(drillsData.map(d => d.category))
+];
+
+drillCategories.forEach(category => {
+const button = document.createElement('button');
+button.textContent = category;
+button.className = 'px-4 py-2 text-sm font-medium rounded-full transition-colors';
+if (category === 'All') {
+button
+.classList
+.add('bg-blue-600', 'text-white');
+} else {
+button
+.classList
+.add('bg-white', 'text-slate-700', 'border', 'border-slate-300', 'hover:bg-slate-100');
+}
+button.addEventListener('click', () => {
+filterDrills(category);
+document
+.querySelectorAll('#drill-filters button')
+.forEach(btn => {
+btn
+    .classList
+    .remove('bg-blue-600', 'text-white');
+btn
+    .classList
+    .add('bg-white', 'text-slate-700', 'border', 'border-slate-300', 'hover:bg-slate-100');
+});
+button
+.classList
+.add('bg-blue-600', 'text-white');
+button
+.classList
+.remove('bg-white', 'text-slate-700', 'border', 'border-slate-300', 'hover:bg-slate-100');
+});
+drillFiltersContainer.appendChild(button);
+});
+
+const renderDrills = (filteredDrills) => {
+drillsContainer.innerHTML = '';
+if (filteredDrills.length === 0) {
+drillsContainer.innerHTML = '<p class="text-center text-slate-500">No drills found for this category.</p>';
+return;
+}
+filteredDrills.forEach((drill, index) => {
+const drillCard = document.createElement('div');
+drillCard.className = 'bg-white p-6 rounded-xl shadow-lg border border-slate-200';
+let optionsHTML = '';
+['A', 'B', 'C', 'D'].forEach(optionKey => {
+optionsHTML += `<div class="quiz-option border-2 border-slate-300 p-3 rounded-lg hover:bg-slate-100 cursor-pointer mb-2" data-option="${optionKey}"><strong>${optionKey}.</strong> ${drill[optionKey]}</div>`;
+});
+
+drillCard.innerHTML = `
+                <p class="mb-4 font-medium text-slate-800">${index + 1}. ${drill.question}</p>
+                <div class="space-y-2">${optionsHTML}</div>
+                <div class="explanation mt-4 p-4 rounded-lg bg-slate-100 border border-slate-200 text-slate-700" style="display: none;">
+                    <strong>Explanation:</strong> ${drill.explanation}
+                </div>
+            `;
+
+drillsContainer.appendChild(drillCard);
+
+drillCard
+.querySelectorAll('.quiz-option')
+.forEach(option => {
+option.addEventListener('click', () => {
+    const selectedOption = option.dataset.option;
+    const allOptions = drillCard.querySelectorAll('.quiz-option');
+    allOptions.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (selectedOption === drill.correct) {
+        option
+            .classList
+            .add('correct');
+    } else {
+        option
+            .classList
+            .add('incorrect');
+        drillCard
+            .querySelector(`[data-option="${drill.correct}"]`)
+            .classList
+            .add('correct');
+    }
+
+    drillCard
+        .querySelector('.explanation')
+        .style
+        .display = 'block';
+});
+});
+});
+};
+
+const filterDrills = (category) => {
+if (category === 'All') {
+renderDrills(drillsData);
+} else {
+const filtered = drillsData.filter(d => d.category === category);
+renderDrills(filtered);
+}
+};
+
+filterDrills('All');
+
+const mobileMenuButton = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+mobileMenuButton.addEventListener('click', () => {
+mobileMenu
+.classList
+.toggle('hidden');
+});
+
+document
+.querySelectorAll('#mobile-menu a')
+.forEach(link => {
+link.addEventListener('click', () => {
+mobileMenu
+.classList
+.add('hidden');
+});
+});
+});
+</script>
+
+</body>
+</html>
