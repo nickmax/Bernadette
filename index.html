@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>U.S. Application Guide for Bernadette Wanjiru</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Chosen Palette: "Warm Neutral Harmony" - A calming and focused palette using beige, tan, slate, and a gentle terracotta accent. -->
-    <!-- Application Structure Plan: The application is designed as a task-oriented dashboard with a fixed sidebar for navigation on larger screens, transforming into a horizontal scrollable navigation bar on mobile. This structure was chosen because the college application process is a series of sequential but interconnected tasks. A user like Bernadette needs to jump between topics like "Financial Aid" and "University List" frequently. The dashboard approach allows for quick access to any section without losing context. Key interactions include: 1) A main navigation to switch between content 'pages' (sections). 2) An interactive timeline chart to visualize key deadlines. 3) A sortable and filterable table for the university list, enabling easy comparison and categorization. 4) A dynamic checklist to track progress, with a summary on the dashboard. This non-linear, user-driven flow is more effective than a long, scrolling document, empowering Bernadette to manage the complex process at her own pace. -->
-    <!-- Visualization & Content Choices: 
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>U.S. Application Guide for Bernadette Wanjiru</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <!-- Chosen Palette: "Warm Neutral Harmony" - A calming and focused palette using beige, tan, slate, and a gentle terracotta accent. -->
+        <!-- Application Structure Plan: The application is designed as a task-oriented dashboard with a fixed sidebar for navigation on larger screens, transforming into a horizontal scrollable navigation bar on mobile. This structure was chosen because the college application process is a series of sequential but interconnected tasks. A user like Bernadette needs to jump between topics like "Financial Aid" and "University List" frequently. The dashboard approach allows for quick access to any section without losing context. Key interactions include: 1) A main navigation to switch between content 'pages' (sections). 2) An interactive timeline chart to visualize key deadlines. 3) A sortable and filterable table for the university list, enabling easy comparison and categorization. 4) A dynamic checklist to track progress, with a summary on the dashboard. This non-linear, user-driven flow is more effective than a long, scrolling document, empowering Bernadette to manage the complex process at her own pace. -->
+        <!-- Visualization & Content Choices: 
         - Report Info: Month-by-Month Timeline -> Goal: Provide a clear, high-level overview of the entire 14-month process -> Viz/Method: Horizontal Bar Chart (Chart.js) -> Interaction: Hovering over bars reveals key tasks for that month -> Justification: A visual timeline is more intuitive and less intimidating than a long list of dates. The bar chart format clearly shows the duration and sequence of phases (Prep, Application, Decision).
         - Report Info: University Recommendations & Data Table -> Goal: Allow for easy comparison and filtering of potential universities -> Viz/Method: Interactive HTML Table with Category Filter -> Interaction: Users can sort the table by any column (e.g., Deadline, Aid Policy) and filter by university type (Ivy League, UC, Other) -> Justification: A sortable and filterable table is the most practical tool for managing a college list, enabling Bernadette to prioritize schools based on her criteria and specific university types.
         - Report Info: Financial Aid Policies (Need-Blind vs. Need-Aware) -> Goal: Explain the crucial difference in aid policies -> Viz/Method: Side-by-side comparison using HTML/CSS/Tailwind cards -> Interaction: Simple static display for clarity -> Justification: A direct visual comparison with clear icons (✅/❌) is the most effective way to communicate this binary and critical concept for an aid-seeking student.
@@ -21,504 +21,781 @@
         - Report Info: Detailed SAT Prep Schedule -> Goal: Provide a granular, actionable plan for SAT preparation leading up to specific test dates -> Viz/Method: Structured HTML lists with weekly breakdowns -> Interaction: Static informational content -> Justification: A step-by-step breakdown is crucial for effective test preparation, especially for a student aiming for high scores.
         - Report Info: Overall Progress -> Goal: Give a quick, high-level overview of application completion -> Viz/Method: Simple percentage display on dashboard -> Interaction: Reflects checklist completion -> Justification: Provides immediate feedback and motivation, helping Bernadette understand her overall progress at a glance.
     -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8; /* Warm off-white */
-            color: #4A4A4A;
-            min-height: 100vh; /* Ensure body takes full viewport height */
-        }
-        .nav-link {
-            transition: all 0.2s ease-in-out;
-            border-left: 3px solid transparent;
-            white-space: nowrap; /* Prevent wrapping on mobile nav */
-        }
-        .nav-link.active, .nav-link:hover {
-            background-color: #F3EAE2; /* Lighter tan */
-            border-left-color: #D97706; /* Terracotta accent */
-            color: #1F2937;
-        }
-        .content-section {
-            display: none;
-        }
-        .content-section.active {
-            display: block;
-        }
-        .card {
-            background-color: #FFFFFF;
-            border: 1px solid #E5E7EB;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            transition: box-shadow 0.3s ease;
-        }
-        .card:hover {
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
-        }
-        .table-sortable th {
-            cursor: pointer;
-        }
-        .table-sortable th:hover {
-            background-color: #F9FAFB;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 350px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 450px;
+        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #FDFBF8;
+                /* Warm off-white */
+                color: #4A4A4A;
+                min-height: 100vh;
+                /* Ensure body takes full viewport height */
             }
-        }
-        .checklist-item.completed {
-            text-decoration: line-through;
-            color: #888;
-        }
-        .formula-card {
-            background-color: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .formula-title {
-            font-weight: 600;
-            color: #1a202c;
-            margin-bottom: 1rem;
-        }
-    </style>
-</head>
-<body class="flex flex-col md:flex-row min-h-screen">
+            .nav-link {
+                transition: all 0.2s ease-in-out;
+                border-left: 3px solid transparent;
+                white-space: nowrap;
+                /* Prevent wrapping on mobile nav */
+            }
+            .nav-link.active,
+            .nav-link:hover {
+                background-color: #F3EAE2;
+                /* Lighter tan */
+                border-left-color: #D97706;
+                /* Terracotta accent */
+                color: #1F2937;
+            }
+            .content-section {
+                display: none;
+            }
+            .content-section.active {
+                display: block;
+            }
+            .card {
+                background-color: #FFFFFF;
+                border: 1px solid #E5E7EB;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+                transition: box-shadow 0.3s ease;
+            }
+            .card:hover {
+                box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+            }
+            .table-sortable th {
+                cursor: pointer;
+            }
+            .table-sortable th:hover {
+                background-color: #F9FAFB;
+            }
+            .chart-container {
+                position: relative;
+                width: 100%;
+                max-width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+                height: 350px;
+                max-height: 400px;
+            }
+            @media (min-width: 768px) {
+                .chart-container {
+                    height: 450px;
+                }
+            }
+            .checklist-item.completed {
+                text-decoration: line-through;
+                color: #888;
+            }
+            .formula-card {
+                background-color: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 0.5rem;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .formula-title {
+                font-weight: 600;
+                color: #1a202c;
+                margin-bottom: 1rem;
+            }
+        </style>
+    </head>
+    <body class="flex flex-col md:flex-row min-h-screen">
 
-    <!-- Sidebar Navigation -->
-    <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 p-4 md:p-6 flex-shrink-0">
-        <div class="flex flex-col items-center md:items-start mb-4 md:mb-6">
-            <h1 class="text-xl font-bold text-gray-800">Bernadette's Guide</h1>
-            <p class="text-sm text-gray-500">U.S. Application 2025-26</p>
-        </div>
-        <nav class="flex flex-row md:flex-col overflow-x-auto pb-2 md:pb-0">
-            <a href="#dashboard" class="nav-link active p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Dashboard</a>
-            <a href="#timeline" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Timeline</a>
-            <a href="#university-list" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">University List</a>
-            <a href="#financial-aid" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Financial Aid</a>
-            <a href="#essays-activities" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Essays & Activities</a>
-            <a href="#testing-academics" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Testing & Academics</a>
-            <a href="#sat-prep" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">SAT Prep Hub</a>
-            <a href="sat.html" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1" target="_blank" rel="noopener">SAT Guides (Full)</a>
-            <a href="#checklist-visa" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Checklist & Visa</a>
-        </nav>
-    </aside>
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 p-4 md:p-6 flex-shrink-0">
+            <div class="flex flex-col items-center md:items-start mb-4 md:mb-6">
+                <h1 class="text-xl font-bold text-gray-800">Bernadette's Guide</h1>
+                <p class="text-sm text-gray-500">U.S. Application 2025-26</p>
+            </div>
+            <nav class="flex flex-row md:flex-col overflow-x-auto pb-2 md:pb-0">
+                <a href="#dashboard" class="nav-link active p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Dashboard</a>
+                <a href="#timeline" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Timeline</a>
+                <a href="#university-list" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">University List</a>
+                <a href="#financial-aid" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Financial Aid</a>
+                <a href="#essays-activities" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Essays & Activities</a>
+                <a href="#testing-academics" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Testing & Academics</a>
+                <a href="#sat-prep" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">SAT Prep Hub</a>
+                <a href="sat.html" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1" target="_blank" rel="noopener">SAT Guides (Full)</a>
+                <a href="#checklist-visa" class="nav-link p-3 md:py-2 md:px-4 text-sm font-medium rounded-md mb-1">Checklist & Visa</a>
+            </nav>
+        </aside>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-        
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="content-section active">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome, Bernadette!</h2>
-            <p class="text-lg text-gray-600 mb-8">This dashboard is your personalized command center for applying to U.S. universities. Here, you'll find a summary of your strategy, key priorities, and quick links to navigate the process. The goal is to make this journey clear, manageable, and successful.</p>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Core Strategy -->
-                <div class="lg:col-span-2 card p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Core Strategy: The Tech Storyteller</h3>
-                    <p class="text-gray-600 mb-4">Your application must tell a compelling story: a Kenyan student passionate about using technology for good. Your strong KCSE grades are the foundation. Your gap year is your opportunity to build the pillars of this story. We will combine your academic achievements with a narrative that highlights your unique interests in swimming, orchestra, and community volunteering, connecting them to your future in Computer Science.</p>
-                    <div class="mt-4 space-y-3">
-                        <div class="flex items-start">
-                            <span class="text-yellow-600 mr-3 mt-1">&#10148;</span>
-                            <p><strong>Testing:</strong> Take the SAT. A score of 1450+ will significantly boost your profile for top schools and large aid packages. Aim for 1600 with dedicated prep.</p>
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome, Bernadette!</h2>
+                <p class="text-lg text-gray-600 mb-8">This dashboard is your personalized command center for applying to U.S. universities. Here, you'll find a summary of your strategy, key priorities, and quick links to navigate the process. The goal is to make this journey clear, manageable, and successful.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Core Strategy -->
+                    <div class="lg:col-span-2 card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Core Strategy: The Tech Storyteller</h3>
+                        <p class="text-gray-600 mb-4">Your application must tell a compelling story: a Kenyan student passionate about using technology for good. Your strong KCSE grades are the foundation. Your gap year is your opportunity to build the pillars of this story. We will combine your academic achievements with a narrative that highlights your unique interests in swimming, orchestra, and community volunteering, connecting them to your future in Computer Science.</p>
+                        <div class="mt-4 space-y-3">
+                            <div class="flex items-start">
+                                <span class="text-yellow-600 mr-3 mt-1">&#10148;</span>
+                                <p>
+                                    <strong>Testing:</strong> Take the SAT. A score of 1450+ will significantly boost your profile for top schools and large aid packages. Aim for 1600 with dedicated prep.</p>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-yellow-600 mr-3 mt-1">&#10148;</span>
+                                <p>
+                                    <strong>Financial Aid:</strong> Focus on "Need-Blind" and "100% Need Met" universities. This is your primary filter for building a college list.</p>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-yellow-600 mr-3 mt-1">&#10148;</span>
+                                <p>
+                                    <strong>Gap Year:</strong> Leverage this time. Pursue coding projects, get a tech certification (e.g., Google IT Support), and volunteer in a tech-related capacity. This demonstrates commitment beyond academics.</p>
+                            </div>
                         </div>
-                        <div class="flex items-start">
-                             <span class="text-yellow-600 mr-3 mt-1">&#10148;</span>
-                            <p><strong>Financial Aid:</strong> Focus on "Need-Blind" and "100% Need Met" universities. This is your primary filter for building a college list.</p>
+                    </div>
+
+                    <!-- Quick Actions & Progress -->
+                    <div class="card p-6 bg-tan-100 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Key Priorities Now</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <span class="text-lg mr-3">1️⃣</span> Dive into SAT Prep Hub</li>
+                                <li class="flex items-center">
+                                    <span class="text-lg mr-3">2️⃣</span> Brainstorm Common App Essay</li>
+                                <li class="flex items-center">
+                                    <span class="text-lg mr-3">3️⃣</span> Research & Refine University List</li>
+                                <li class="flex items-center">
+                                    <span class="text-lg mr-3">4️⃣</span> Identify Your Recommenders</li>
+                            </ul>
                         </div>
-                        <div class="flex items-start">
-                             <span class="text-yellow-600 mr-3 mt-1">&#10148;</span>
-                            <p><strong>Gap Year:</strong> Leverage this time. Pursue coding projects, get a tech certification (e.g., Google IT Support), and volunteer in a tech-related capacity. This demonstrates commitment beyond academics.</p>
+                        <div class="mt-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Application Progress</h3>
+                            <div class="w-full bg-gray-200 rounded-full h-4">
+                                <div id="progressBar" class="bg-yellow-600 h-4 rounded-full" style="width: 0%;"></div>
+                            </div>
+                            <p id="progressText" class="text-sm text-gray-700 mt-2 text-right">0% Complete</p>
+                        </div>
+                        <div class="mt-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Upcoming Milestones</h3>
+                            <ul id="upcomingMilestones" class="space-y-2 text-sm text-gray-700">
+                                <!-- Milestones will be dynamically loaded here -->
+                            </ul>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <!-- Quick Actions & Progress -->
-                <div class="card p-6 bg-tan-100 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Key Priorities Now</h3>
-                        <ul class="space-y-3">
-                            <li class="flex items-center"><span class="text-lg mr-3">1️⃣</span> Dive into SAT Prep Hub</li>
-                            <li class="flex items-center"><span class="text-lg mr-3">2️⃣</span> Brainstorm Common App Essay</li>
-                            <li class="flex items-center"><span class="text-lg mr-3">3️⃣</span> Research & Refine University List</li>
-                            <li class="flex items-center"><span class="text-lg mr-3">4️⃣</span> Identify Your Recommenders</li>
-                        </ul>
-                    </div>
-                    <div class="mt-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Application Progress</h3>
-                        <div class="w-full bg-gray-200 rounded-full h-4">
-                            <div id="progressBar" class="bg-yellow-600 h-4 rounded-full" style="width: 0%;"></div>
-                        </div>
-                        <p id="progressText" class="text-sm text-gray-700 mt-2 text-right">0% Complete</p>
-                    </div>
-                    <div class="mt-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Upcoming Milestones</h3>
-                        <ul id="upcomingMilestones" class="space-y-2 text-sm text-gray-700">
-                            <!-- Milestones will be dynamically loaded here -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Timeline Section -->
-        <section id="timeline" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Application Timeline</h2>
-            <p class="text-lg text-gray-600 mb-8">This visual timeline breaks down the entire application process from July 2025 until you receive your admission decisions. Hover over each bar to see the key tasks for that period. Use this to stay on track and manage your time effectively, ensuring no deadlines are missed.</p>
-             <div class="card p-6">
-                <div class="chart-container">
-                    <canvas id="timelineChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- University List Section -->
-        <section id="university-list" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">University List</h2>
-             <p class="text-lg text-gray-600 mb-8">This is your curated list of potential universities, focusing on strong Computer Science programs and excellent financial aid for international students. The table is sortable; click on the headers to reorder the list. Use the filter below to view specific categories of schools.</p>
-            <div class="mb-4">
-                <label for="universityFilter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Category:</label>
-                <select id="universityFilter" class="mt-1 block w-full md:w-1/3 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm rounded-md">
-                    <option value="All">All Universities</option>
-                    <option value="Ivy League">Ivy League</option>
-                    <option value="UC Schools">UC Schools</option>
-                    <option value="Caltech">Caltech</option>
-                    <option value="Other Top CS & Aid">Other Top CS & Aid</option>
-                    <option value="Need-Blind">Need-Blind (Guaranteed Aid)</option>
-                </select>
-            </div>
-            <div class="card overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-500 table-sortable">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3" data-sort="name">University</th>
-                            <th scope="col" class="px-6 py-3" data-sort="category">Category</th>
-                            <th scope="col" class="px-6 py-3" data-sort="deadline">Deadline (RD)</th>
-                            <th scope="col" class="px-6 py-3" data-sort="platform">Platform</th>
-                            <th scope="col" class="px-6 py-3" data-sort="aid">Aid Policy</th>
-                            <th scope="col" class="px-6 py-3" data-sort="test">Test Policy</th>
-                        </tr>
-                    </thead>
-                    <tbody id="universityTableBody">
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Financial Aid Section -->
-        <section id="financial-aid" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Financial Aid & Scholarships</h2>
-            <p class="text-lg text-gray-600 mb-8">Securing financial aid is your top priority. This section explains the critical difference between university aid policies and highlights key scholarships. Understanding these concepts is essential to building a realistic and successful application strategy.</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="card p-6 border-t-4 border-green-500">
-                    <h3 class="text-xl font-semibold mb-2">Need-Blind ✅</h3>
-                    <p class="text-gray-600">These universities do NOT consider your ability to pay when making an admission decision. This is the gold standard for aid seekers.</p>
-                    <p class="font-semibold mt-4">Schools include: Harvard, Yale, Princeton, MIT, Amherst, Bowdoin, Dartmouth, Williams.</p>
-                </div>
-                <div class="card p-6 border-t-4 border-yellow-500">
-                    <h3 class="text-xl font-semibold mb-2">Need-Aware / 100% Need Met ⚠️</h3>
-                    <p class="text-gray-600">These schools DO consider your need for aid in their admission decision. However, if they admit you, they promise to cover 100% of your calculated need. Your application must be exceptionally strong to be chosen.</p>
-                </div>
-            </div>
-            
-            <div class="card p-6">
-                <h3 class="text-xl font-semibold mb-4">Key Forms & External Scholarships</h3>
-                <ul class="space-y-4">
-                    <li>
-                        <h4 class="font-semibold">CSS Profile</h4>
-                        <p class="text-gray-600 text-sm">The most common financial aid application for private universities. It's more detailed than other forms. Requires financial documents like bank statements and income records.</p>
-                    </li>
-                    <li>
-                        <h4 class="font-semibold">ISFAA (International Student Financial Aid Application)</h4>
-                        <p class="text-gray-600 text-sm">A free alternative to the CSS Profile used by some universities. Check each school's requirements.</p>
-                    </li>
-                     <li>
-                        <h4 class="font-semibold">External Scholarships</h4>
-                        <p class="text-gray-600 text-sm">Don't rely solely on universities. Actively apply to external scholarships. Top options for Kenyan students include the Mastercard Foundation Scholars Program and Zawadi Africa Education Fund.</p>
-                    </li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Essays & Activities Section -->
-        <section id="essays-activities" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Essays & Activities</h2>
-            <p class="text-lg text-gray-600 mb-8">Your essays and activities list are where you tell your unique story. This is your chance to go beyond grades and scores. Use this space to connect your experiences in Kenya—from the swim team to volunteering—to your ambitions in the tech world.</p>
-
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Timeline Section -->
+            <section id="timeline" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Application Timeline</h2>
+                <p class="text-lg text-gray-600 mb-8">This visual timeline breaks down the entire application process from July 2025 until you receive your admission decisions. Hover over each bar to see the key tasks for that period. Use this to stay on track and manage your time effectively, ensuring no deadlines are missed.</p>
                 <div class="card p-6">
-                    <h3 class="text-xl font-semibold mb-4">Essay Strategy</h3>
-                    <p class="text-gray-600 mb-4">Your main essay should reveal your character. Don't just write about *what* you did; write about *why* it mattered and how it changed you.</p>
-                    <ul class="space-y-2 text-sm">
-                        <li><strong>Prompt Idea:</strong> Reflect on a time when you faced a challenge. How did your discipline from swimming or orchestra help you solve it?</li>
-                        <li><strong>"Why Us?" Essay:</strong> Research specific professors, courses, or labs at each university. Connect them to your specific interests in CS.</li>
-                        <li><strong>Show, Don't Tell:</strong> Instead of saying you are "hardworking," describe a time you worked for weeks on a difficult coding problem.</li>
+                    <div class="chart-container">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- University List Section -->
+            <section id="university-list" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">University List</h2>
+                <p class="text-lg text-gray-600 mb-8">This is your curated list of potential universities, focusing on strong Computer Science programs and excellent financial aid for international students. The table is sortable; click on the headers to reorder the list. Use the filter below to view specific categories of schools.</p>
+                <div class="mb-4">
+                    <label for="universityFilter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Category:</label>
+                    <select id="universityFilter" class="mt-1 block w-full md:w-1/3 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm rounded-md">
+                        <option value="All">All Universities</option>
+                        <option value="Ivy League">Ivy League</option>
+                        <option value="UC Schools">UC Schools</option>
+                        <option value="Caltech">Caltech</option>
+                        <option value="Other Top CS & Aid">Other Top CS & Aid</option>
+                        <option value="Need-Blind">Need-Blind (Guaranteed Aid)</option>
+                    </select>
+                </div>
+                <div class="card overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500 table-sortable">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3" data-sort="name">University</th>
+                                <th scope="col" class="px-6 py-3" data-sort="category">Category</th>
+                                <th scope="col" class="px-6 py-3" data-sort="deadline">Deadline (RD)</th>
+                                <th scope="col" class="px-6 py-3" data-sort="platform">Platform</th>
+                                <th scope="col" class="px-6 py-3" data-sort="aid">Aid Policy</th>
+                                <th scope="col" class="px-6 py-3" data-sort="test">Test Policy</th>
+                            </tr>
+                        </thead>
+                        <tbody id="universityTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Financial Aid Section -->
+            <section id="financial-aid" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Financial Aid & Scholarships</h2>
+                <p class="text-lg text-gray-600 mb-8">Securing financial aid is your top priority. This section explains the critical difference between university aid policies and highlights key scholarships. Understanding these concepts is essential to building a realistic and successful application strategy.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="card p-6 border-t-4 border-green-500">
+                        <h3 class="text-xl font-semibold mb-2">Need-Blind ✅</h3>
+                        <p class="text-gray-600">These universities do NOT consider your ability to pay when making an admission decision. This is the gold standard for aid seekers.</p>
+                        <p class="font-semibold mt-4">Schools include: Harvard, Yale, Princeton, MIT, Amherst, Bowdoin, Dartmouth, Williams.</p>
+                    </div>
+                    <div class="card p-6 border-t-4 border-yellow-500">
+                        <h3 class="text-xl font-semibold mb-2">Need-Aware / 100% Need Met ⚠️</h3>
+                        <p class="text-gray-600">These schools DO consider your need for aid in their admission decision. However, if they admit you, they promise to cover 100% of your calculated need. Your application must be exceptionally strong to be chosen.</p>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">Key Forms & External Scholarships</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <h4 class="font-semibold">CSS Profile</h4>
+                            <p class="text-gray-600 text-sm">The most common financial aid application for private universities. It's more detailed than other forms. Requires financial documents like bank statements and income records.</p>
+                        </li>
+                        <li>
+                            <h4 class="font-semibold">ISFAA (International Student Financial Aid Application)</h4>
+                            <p class="text-gray-600 text-sm">A free alternative to the CSS Profile used by some universities. Check each school's requirements.</p>
+                        </li>
+                        <li>
+                            <h4 class="font-semibold">External Scholarships</h4>
+                            <p class="text-gray-600 text-sm">Don't rely solely on universities. Actively apply to external scholarships. Top options for Kenyan students include the Mastercard Foundation Scholars Program and Zawadi Africa Education Fund.</p>
+                        </li>
                     </ul>
                 </div>
-                 <div class="card p-6">
-                    <h3 class="text-xl font-semibold mb-4">Framing Your Activities</h3>
-                     <p class="text-gray-600 mb-4">Describe your extracurriculars using action verbs and quantifiable results when possible.</p>
-                    <ul class="space-y-2 text-sm">
-                        <li><strong>Swim Team:</strong> "Competed in national-level meets; trained 15 hours/week, fostering discipline and time management."</li>
-                        <li><strong>Orchestra:</strong> "First-chair violinist; collaborated with 40+ musicians to perform complex classical pieces."</li>
-                        <li><strong>Volunteering:</strong> "Organized a local coding club for 20 younger students, teaching basic Python and web design."</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Testing & Academics Section -->
-        <section id="testing-academics" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Testing & Academics</h2>
-            <p class="text-lg text-gray-600 mb-8">This section details how to handle the standardized requirements of U.S. applications, from the SAT to your KCSE transcript. Presenting your academic profile correctly is a foundational step for a successful application.</p>
-            
-            <div class="card p-6 mb-6">
-                 <h3 class="text-xl font-semibold mb-4">Standardized Testing Plan</h3>
-                 <p class="text-gray-600 mb-4">While many schools are test-optional, a strong SAT score is a significant advantage for international students seeking aid. Plan to take it at least once.</p>
-                 <ul class="space-y-3">
-                    <li><strong>Which Test?:</strong> The Digital SAT is generally recommended for its shorter length and adaptive format.</li>
-                    <li><strong>Preparation:</strong> Use the free, official practice materials on Khan Academy and the College Board's Bluebook app. This is the most effective way to prepare. For a deep dive, visit the <a href="#sat-prep" class="text-yellow-600 hover:underline">SAT Prep Hub</a>.</li>
-                    <li><strong>Registration:</strong> Register for the October or December 2025 tests via the College Board website. Register early to find a spot in a Kenyan test center.</li>
-                    <li><strong>English Proficiency:</strong> As you were educated in English, many universities will waive the TOEFL/IELTS requirement. Always check each school's specific policy. If required, the Duolingo English Test is often a cheaper and more convenient option.</li>
-                 </ul>
-            </div>
+            <!-- Essays & Activities Section -->
+            <section id="essays-activities" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Essays & Activities</h2>
+                <p class="text-lg text-gray-600 mb-8">Your essays and activities list are where you tell your unique story. This is your chance to go beyond grades and scores. Use this space to connect your experiences in Kenya—from the swim team to volunteering—to your ambitions in the tech world.</p>
 
-            <div class="card p-6 mb-6">
-                <h3 class="text-xl font-semibold mb-4">Detailed SAT Preparation Schedule (July 21, 2025 - December 6, 2025)</h3>
-                <p class="text-gray-600 mb-4">This schedule provides a detailed breakdown of preparation leading up to your planned SAT test dates. Consistency is key!</p>
-                
-                <div class="space-y-6">
-                    <!-- SAT August 23, 2025 -->
-                    <div>
-                        <h4 class="font-semibold text-lg mb-2">For SAT on August 23, 2025</h4>
-                        <p class="text-gray-700 mb-2"><strong>Goal:</strong> Establish baseline, identify strengths/weaknesses.</p>
-                        <ul class="list-disc list-inside text-sm space-y-1">
-                            <li><strong>Week of July 21:</strong> Diagnostic test (full length). Review results, identify weakest areas in Math, Reading, Writing.</li>
-                            <li><strong>Week of July 28:</strong> Focused content review for weakest areas. Practice specific question types.</li>
-                            <li><strong>Week of August 4:</strong> Practice sections (Math, Reading, Writing) daily. Work on pacing.</li>
-                            <li><strong>Week of August 11:</strong> Take a second full-length practice test. Analyze errors. Review all concepts.</li>
-                            <li><strong>Week of August 18:</strong> Light review, focus on high-yield topics. Get plenty of rest.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card p-6 mt-6">
-                 <h3 class="text-xl font-semibold mb-4">Kenyan Academic Records</h3>
-                 <p class="text-gray-600 mb-4">Your KCSE results are the centerpiece of your academic record. Here is how to prepare them:</p>
-                  <ul class="space-y-3">
-                    <li><strong>Required Documents:</strong> You will need your official KCSE certificate and your high school transcripts (Form 1-4 records).</li>
-                    <li><strong>GPA Conversion:</strong> Do NOT try to convert your KCSE grades to a 4.0 GPA yourself. U.S. admissions officers are trained to evaluate the Kenyan system. Provide your grades as they are.</li>
-                     <li><strong>School Profile:</strong> Ask your high school counselor to provide a "school profile"—a document that describes your school, its curriculum, and its grading scale. This provides crucial context for admissions officers.</li>
-                 </ul>
-            </div>
-        </section>
-        
-        <!-- SAT Prep Hub Section -->
-        <section id="sat-prep" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Aiming for 1600: SAT Prep Hub</h2>
-            <p class="text-lg text-gray-600 mb-8">A perfect score is within reach with strategic and dedicated preparation. This hub contains the essential formulas, strategies, and resources you need to master the Digital SAT.</p>
-
-            <!-- Math Section -->
-            <div class="formula-card">
-                <h3 class="text-2xl font-semibold text-gray-800 mb-6">Math: The Formula & Concept Toolkit</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h4 class="formula-title">Heart of Algebra</h4>
-                        <p><strong>Linear Equations:</strong> $y = mx + b$</p>
-                        <p><strong>Slope Formula:</strong> $m = \frac{y_2 - y_1}{x_2 - x_1}$</p>
-                        <p><strong>Systems of Equations:</strong> Master substitution and elimination methods.</p>
-                    </div>
-                    <div>
-                        <h4 class="formula-title">Problem Solving & Data Analysis</h4>
-                        <p><strong>Ratios, Proportions, Percentages:</strong> $\frac{part}{whole} = \frac{\%}{100}$</p>
-                        <p><strong>Mean (Average):</strong> $\frac{\text{sum of terms}}{\text{number of terms}}$</p>
-                        <p><strong>Probability:</strong> $\frac{\text{number of favorable outcomes}}{\text{total number of outcomes}}$</p>
-                    </div>
-                    <div>
-                        <h4 class="formula-title">Passport to Advanced Math</h4>
-                        <p><strong>Quadratic Formula:</strong> $x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$</p>
-                        <p><strong>Vertex Form:</strong> $y = a(x-h)^2 + k$</p>
-                        <p><strong>Exponent Rules:</strong> $x^a \cdot x^b = x^{a+b}$ and $(x^a)^b = x^{ab}$</p>
-                        <p><strong>Difference of Squares:</strong> $x^2 - y^2 = (x+y)(x-y)$</p>
-                    </div>
-                    <div>
-                        <h4 class="formula-title">Geometry & Trigonometry</h4>
-                        <p><strong>Pythagorean Theorem:</strong> $a^2 + b^2 = c^2$</p>
-                        <p><strong>Area of a Circle:</strong> $A = \pi r^2$</p>
-                        <p><strong>Circumference:</strong> $C = 2\pi r$</p>
-                        <p><strong>Volume of a Cylinder:</strong> $V = \pi r^2 h$</p>
-                        <p><strong>SOHCAHTOA:</strong> $\sin(x) = \frac{O}{H}$, $\cos(x) = \frac{A}{H}$, $\tan(x) = \frac{O}{A}$</p>
-                        <p><strong>Degrees to Radians:</strong> $degrees \cdot \frac{\pi}{180}$</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reading & Writing Section -->
-            <div class="formula-card">
-                <h3 class="text-2xl font-semibold text-gray-800 mb-6">Reading & Writing: Strategies for Perfection</h3>
-                <ul class="space-y-4 list-disc list-inside">
-                    <li><strong>Read the Question First:</strong> Know what you're looking for before you read the passage. This makes your reading active and purposeful.</li>
-                    <li><strong>Find Direct Evidence:</strong> Every correct answer is directly supported by the text. You should be able to point to the line or phrase that proves your answer. Avoid making inferences.</li>
-                    <li><strong>Master Punctuation:</strong> Understand the roles of commas, semicolons, colons, and dashes. A semicolon (;) connects two complete sentences. A colon (:) introduces a list or explanation.</li>
-                    <li><strong>Subject-Verb Agreement:</strong> Find the true subject of the sentence and ensure the verb matches it in number (singular/plural), ignoring intervening phrases.</li>
-                    <li><strong>Logical Transitions:</strong> Read the sentences before and after a transition word. Determine the relationship: is it continuation (e.g., *moreover*), contrast (e.g., *however*), or cause-and-effect (e.g., *therefore*)?</li>
-                    <li><strong>Eliminate, Don't Select:</strong> It's often easier to find flaws in the three wrong answers than to confirm the right one. Actively look for answers that are too extreme, off-topic, or only partially true.</li>
-                </ul>
-            </div>
-
-            <!-- Resources Section -->
-            <div class="formula-card">
-                <h3 class="text-2xl font-semibold text-gray-800 mb-6">Top-Tier Prep Resources</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-semibold">Free Resources (Essential)</h4>
-                        <ul class="space-y-2 mt-2">
-                            <li><a href="https://www.khanacademy.org/digital-sat" target="_blank" class="text-yellow-600 hover:underline"><strong>Khan Academy:</strong></a> The official, free partner of the College Board. Personalized practice based on your skill level. Absolutely essential.</li>
-                            <li><a href="https://bluebook.app.collegeboard.org/" target="_blank" class="text-yellow-600 hover:underline"><strong>College Board Bluebook App:</strong></a> Take official, full-length digital SAT practice tests in the same format as the real exam.</li>
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold mb-4">Essay Strategy</h3>
+                        <p class="text-gray-600 mb-4">Your main essay should reveal your character. Don't just write about *what* you did; write about *why* it mattered and how it changed you.</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>
+                                <strong>Prompt Idea:</strong> Reflect on a time when you faced a challenge. How did your discipline from swimming or orchestra help you solve it?</li>
+                            <li>
+                                <strong>"Why Us?" Essay:</strong> Research specific professors, courses, or labs at each university. Connect them to your specific interests in CS.</li>
+                            <li>
+                                <strong>Show, Don't Tell:</strong> Instead of saying you are "hardworking," describe a time you worked for weeks on a difficult coding problem.</li>
                         </ul>
                     </div>
-                    <div>
-                        <h4 class="font-semibold">Paid Resources (Highly Recommended for 1600)</h4>
-                        <ul class="space-y-2 mt-2">
-                            <li><a href="https://collegeprep.uworld.com/sat/" target="_blank" class="text-yellow-600 hover:underline"><strong>UWorld:</strong></a> Known for high-quality practice questions with incredibly detailed explanations that teach the concepts behind the answers.</li>
-                            <li><a href="https://www.princetonreview.com/college/sat-test-prep" target="_blank" class="text-yellow-600 hover:underline"><strong>The Princeton Review:</strong></a> Offers comprehensive courses, tutoring, and score guarantees.</li>
-                             <li><a href="https://www.kaptest.com/sat" target="_blank" class="text-yellow-600 hover:underline"><strong>Kaplan:</strong></a> Another major player with a long history of effective test prep courses and materials.</li>
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold mb-4">Framing Your Activities</h3>
+                        <p class="text-gray-600 mb-4">Describe your extracurriculars using action verbs and quantifiable results when possible.</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>
+                                <strong>Swim Team:</strong> "Competed in national-level meets; trained 15 hours/week, fostering discipline and time management."</li>
+                            <li>
+                                <strong>Orchestra:</strong> "First-chair violinist; collaborated with 40+ musicians to perform complex classical pieces."</li>
+                            <li>
+                                <strong>Volunteering:</strong> "Organized a local coding club for 20 younger students, teaching basic Python and web design."</li>
                         </ul>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
+            <!-- Testing & Academics Section -->
+            <section id="testing-academics" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Testing & Academics</h2>
+                <p class="text-lg text-gray-600 mb-8">This section details how to handle the standardized requirements of U.S. applications, from the SAT to your KCSE transcript. Presenting your academic profile correctly is a foundational step for a successful application.</p>
 
-        <!-- Checklist & Visa Section -->
-        <section id="checklist-visa" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Document Checklist & F-1 Visa Guide</h2>
-             <p class="text-lg text-gray-600 mb-8">Stay organized with this interactive checklist for all your application components. Once you're accepted, this section will guide you through the F-1 student visa process at the U.S. Embassy in Nairobi. Checking off items here will update your progress on the Dashboard.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card p-6">
-                    <h3 class="text-xl font-semibold mb-4">Application Document Checklist</h3>
-                    <div id="checklist" class="space-y-3">
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Valid Passport (valid 6+ months beyond start date)</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">KCSE Certificate & Transcripts</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">SAT Score Reports (sent officially)</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">English Proficiency Scores (if required)</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Completed Common App (or other platform)</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Main Essay & Supplemental Essays</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Letters of Recommendation (2-3)</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">CSS Profile / ISFAA</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Financial Documents (bank statements, income proof)</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">School Profile</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">I-20 Form (after admission)</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">SEVIS I-901 Fee Paid</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">DS-160 Completed</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Visa Interview Scheduled</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Immunization Records</label>
-                        <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Health Insurance Arranged</label>
+                <div class="card p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4">Standardized Testing Plan</h3>
+                    <p class="text-gray-600 mb-4">While many schools are test-optional, a strong SAT score is a significant advantage for international students seeking aid. Plan to take it at least once.</p>
+                    <ul class="space-y-3">
+                        <li>
+                            <strong>Which Test?:</strong> The Digital SAT is generally recommended for its shorter length and adaptive format.</li>
+                        <li>
+                            <strong>Preparation:</strong> Use the free, official practice materials on Khan Academy and the College Board's Bluebook app. This is the most effective way to prepare. For a deep dive, visit the <a href="#sat-prep" class="text-yellow-600 hover:underline">SAT Prep Hub</a>.</li>
+                        <li>
+                            <strong>Registration:</strong> Register for the October or December 2025 tests via the College Board website. Register early to find a spot in a Kenyan test center.</li>
+                        <li>
+                            <strong>English Proficiency:</strong> As you were educated in English, many universities will waive the TOEFL/IELTS requirement. Always check each school's specific policy. If required, the Duolingo English Test is often a cheaper and more convenient option.</li>
+                    </ul>
+                </div>
+
+                <div class="card p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4">Detailed SAT Preparation Schedule (July 21, 2025 - December 6, 2025)</h3>
+                    <p class="text-gray-600 mb-4">This schedule provides a detailed breakdown of preparation leading up to your planned SAT test dates. Consistency is key!</p>
+
+                    <div class="space-y-6">
+                        <!-- SAT August 23, 2025 -->
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2">For SAT on August 23, 2025</h4>
+                            <p class="text-gray-700 mb-2">
+                                <strong>Goal:</strong> Establish baseline, identify strengths/weaknesses.</p>
+                            <ul class="list-disc list-inside text-sm space-y-1">
+                                <li>
+                                    <strong>Week of July 21:</strong> Diagnostic test (full length). Review results, identify weakest areas in Math, Reading, Writing.</li>
+                                <li>
+                                    <strong>Week of July 28:</strong> Focused content review for weakest areas. Practice specific question types.</li>
+                                <li>
+                                    <strong>Week of August 4:</strong> Practice sections (Math, Reading, Writing) daily. Work on pacing.</li>
+                                <li>
+                                    <strong>Week of August 11:</strong> Take a second full-length practice test. Analyze errors. Review all concepts.</li>
+                                <li>
+                                    <strong>Week of August 18:</strong> Light review, focus on high-yield topics. Get plenty of rest.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card p-6">
-                    <h3 class="text-xl font-semibold mb-4">F-1 Visa Process (Post-Acceptance)</h3>
-                    <ol class="list-decimal list-inside space-y-2 text-gray-600">
-                        <li>Receive Form I-20 from your university.</li>
-                        <li>Pay the SEVIS I-901 Fee online.</li>
-                        <li>Complete the DS-160 online visa application.</li>
-                        <li>Schedule an interview at the U.S. Embassy in Nairobi.</li>
-                        <li>Gather documents: I-20, passport, financial proof, acceptance letter.</li>
-                        <li>Attend your interview and answer questions confidently.</li>
-                    </ol>
+                <div class="card p-6 mt-6">
+                    <h3 class="text-xl font-semibold mb-4">Kenyan Academic Records</h3>
+                    <p class="text-gray-600 mb-4">Your KCSE results are the centerpiece of your academic record. Here is how to prepare them:</p>
+                    <ul class="space-y-3">
+                        <li>
+                            <strong>Required Documents:</strong> You will need your official KCSE certificate and your high school transcripts (Form 1-4 records).</li>
+                        <li>
+                            <strong>GPA Conversion:</strong> Do NOT try to convert your KCSE grades to a 4.0 GPA yourself. U.S. admissions officers are trained to evaluate the Kenyan system. Provide your grades as they are.</li>
+                        <li>
+                            <strong>School Profile:</strong> Ask your high school counselor to provide a "school profile"—a document that describes your school, its curriculum, and its grading scale. This provides crucial context for admissions officers.</li>
+                    </ul>
                 </div>
-            </div>
-        </section>
+            </section>
 
-    </main>
+            <!-- SAT Prep Hub Section -->
+            <section id="sat-prep" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Aiming for 1600: SAT Prep Hub</h2>
+                <p class="text-lg text-gray-600 mb-8">A perfect score is within reach with strategic and dedicated preparation. This hub contains the essential formulas, strategies, and resources you need to master the Digital SAT.</p>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('.content-section');
-            const universityTableBody = document.getElementById('universityTableBody');
-            const sortableHeaders = document.querySelectorAll('.table-sortable th');
-            const universityFilter = document.getElementById('universityFilter');
-            const checklistContainer = document.getElementById('checklist');
-            const progressBar = document.getElementById('progressBar');
-            const progressText = document.getElementById('progressText');
-            const upcomingMilestonesList = document.getElementById('upcomingMilestones');
+                <!-- Math Section -->
+                <div class="formula-card">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6">Math: The Formula & Concept Toolkit</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="formula-title">Heart of Algebra</h4>
+                            <p>
+                                <strong>Linear Equations:</strong> $y = mx + b$</p>
+                            <p>
+                                <strong>Slope Formula:</strong> $m = \frac{y_2 - y_1}{x_2 - x_1}$</p>
+                            <p>
+                                <strong>Systems of Equations:</strong> Master substitution and elimination methods.</p>
+                        </div>
+                        <div>
+                            <h4 class="formula-title">Problem Solving & Data Analysis</h4>
+                            <p>
+                                <strong>Ratios, Proportions, Percentages:</strong> $\frac{part}{whole} = \frac{\%}{100}$</p>
+                            <p>
+                                <strong>Mean (Average):</strong> $\frac{\text{sum of terms}}{\text{number of terms}}$</p>
+                            <p>
+                                <strong>Probability:</strong> $\frac{\text{number of favorable outcomes}}{\text{total number of outcomes}}$</p>
+                        </div>
+                        <div>
+                            <h4 class="formula-title">Passport to Advanced Math</h4>
+                            <p>
+                                <strong>Quadratic Formula:</strong> $x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$</p>
+                            <p>
+                                <strong>Vertex Form:</strong> $y = a(x-h)^2 + k$</p>
+                            <p>
+                                <strong>Exponent Rules:</strong> $x^a \cdot x^b = x^{a+b}$ and $(x^a)^b = x^{ab}$</p>
+                            <p>
+                                <strong>Difference of Squares:</strong> $x^2 - y^2 = (x+y)(x-y)$</p>
+                        </div>
+                        <div>
+                            <h4 class="formula-title">Geometry & Trigonometry</h4>
+                            <p>
+                                <strong>Pythagorean Theorem:</strong> $a^2 + b^2 = c^2$</p>
+                            <p>
+                                <strong>Area of a Circle:</strong> $A = \pi r^2$</p>
+                            <p>
+                                <strong>Circumference:</strong> $C = 2\pi r$</p>
+                            <p>
+                                <strong>Volume of a Cylinder:</strong> $V = \pi r^2 h$</p>
+                            <p>
+                                <strong>SOHCAHTOA:</strong> $\sin(x) = \frac{O}{H}$, $\cos(x) = \frac{A}{H}$, $\tan(x) = \frac{O}{A}$</p>
+                            <p>
+                                <strong>Degrees to Radians:</strong> $degrees \cdot \frac{\pi}{180}$</p>
+                        </div>
+                    </div>
+                </div>
 
-            const universityData = [
-                { name: 'Harvard University', category: 'Ivy League', deadline: 'Jan 1', platform: 'Common App', aid: 'Need-Blind', test: 'Test-Optional (Recommended)' },
-                { name: 'Princeton University', category: 'Ivy League', deadline: 'Jan 1', platform: 'Common App', aid: 'Need-Blind', test: 'Test-Optional (Recommended)' },
-                { name: 'Yale University', category: 'Ivy League', deadline: 'Jan 2', platform: 'Common App', aid: 'Need-Blind', test: 'Test-Required' },
-                { name: 'Columbia University', category: 'Ivy League', deadline: 'Jan 1', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'University of Pennsylvania', category: 'Ivy League', deadline: 'Jan 5', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'Brown University', category: 'Ivy League', deadline: 'Jan 3', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'Dartmouth College', category: 'Ivy League', deadline: 'Jan 3', platform: 'Common App', aid: 'Need-Blind', test: 'Test-Optional' },
-                { name: 'Cornell University', category: 'Ivy League', deadline: 'Jan 2', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                
-                { name: 'MIT', category: 'Other Top CS & Aid', deadline: 'Jan 1', platform: 'MIT App', aid: 'Need-Blind', test: 'Test-Optional' },
-                { name: 'California Institute of Technology (Caltech)', category: 'Caltech', deadline: 'Jan 3', platform: 'Common App', aid: 'Need-Aware, Limited', test: 'Test-Optional' },
-                { name: 'Stanford University', category: 'Other Top CS & Aid', deadline: 'Jan 5', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional (Recommended)' },
-                { name: 'Amherst College', category: 'Need-Blind', deadline: 'Jan 3', platform: 'Common App', aid: 'Need-Blind', test: 'Test-Optional' },
-                { name: 'Bowdoin College', category: 'Need-Blind', deadline: 'Jan 5', platform: 'Common App', aid: 'Need-Blind', test: 'Test-Optional' },
-                { name: 'Williams College', category: 'Need-Blind', deadline: 'Jan 8', platform: 'Common App', aid: 'Need-Blind', test: 'Test-Optional' },
-                { name: 'Duke University', category: 'Other Top CS & Aid', deadline: 'Jan 2', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional (Recommended)' },
-                { name: 'Vanderbilt University', category: 'Other Top CS & Aid', deadline: 'Jan 1', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional (Recommended)' },
-                { name: 'Rice University', category: 'Other Top CS & Aid', deadline: 'Jan 4', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'University of Rochester', category: 'Other Top CS & Aid', deadline: 'Jan 5', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'Trinity College', category: 'Other Top CS & Aid', deadline: 'Jan 17', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'Skidmore College', category: 'Other Top CS & Aid', deadline: 'Jan 15', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'University of Chicago', category: 'Other Top CS & Aid', deadline: 'Jan 2', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'Northwestern University', category: 'Other Top CS & Aid', deadline: 'Jan 3', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
-                { name: 'Washington University in St. Louis', category: 'Other Top CS & Aid', deadline: 'Jan 2', platform: 'Common App', aid: 'Need-Aware, 100% Met (if admitted)', test: 'Test-Optional' },
+                <!-- Reading & Writing Section -->
+                <div class="formula-card">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6">Reading & Writing: Strategies for Perfection</h3>
+                    <ul class="space-y-4 list-disc list-inside">
+                        <li>
+                            <strong>Read the Question First:</strong> Know what you're looking for before you read the passage. This makes your reading active and purposeful.</li>
+                        <li>
+                            <strong>Find Direct Evidence:</strong> Every correct answer is directly supported by the text. You should be able to point to the line or phrase that proves your answer. Avoid making inferences.</li>
+                        <li>
+                            <strong>Master Punctuation:</strong> Understand the roles of commas, semicolons, colons, and dashes. A semicolon (;) connects two complete sentences. A colon (:) introduces a list or explanation.</li>
+                        <li>
+                            <strong>Subject-Verb Agreement:</strong> Find the true subject of the sentence and ensure the verb matches it in number (singular/plural), ignoring intervening phrases.</li>
+                        <li>
+                            <strong>Logical Transitions:</strong> Read the sentences before and after a transition word. Determine the relationship: is it continuation (e.g., *moreover*), contrast (e.g., *however*), or cause-and-effect (e.g., *therefore*)?</li>
+                        <li>
+                            <strong>Eliminate, Don't Select:</strong> It's often easier to find flaws in the three wrong answers than to confirm the right one. Actively look for answers that are too extreme, off-topic, or only partially true.</li>
+                    </ul>
+                </div>
 
-                // UC Schools - generally limited aid for internationals
-                { name: 'UC Berkeley', category: 'UC Schools', deadline: 'Nov 30', platform: 'UC App', aid: 'Limited Need-Based', test: 'Test-Blind' },
-                { name: 'UCLA', category: 'UC Schools', deadline: 'Nov 30', platform: 'UC App', aid: 'Limited Need-Based', test: 'Test-Blind' },
-                { name: 'UC San Diego', category: 'UC Schools', deadline: 'Nov 30', platform: 'UC App', aid: 'Limited Need-Based', test: 'Test-Blind' },
-                { name: 'UC Irvine', category: 'UC Schools', deadline: 'Nov 30', platform: 'UC App', aid: 'Limited Need-Based', test: 'Test-Blind' },
-                { name: 'UC Davis', category: 'UC Schools', deadline: 'Nov 30', platform: 'UC App', aid: 'Limited Need-Based', test: 'Test-Blind' },
-                { name: 'UC Santa Barbara', category: 'UC Schools', deadline: 'Nov 30', platform: 'UC App', aid: 'Limited Need-Based', test: 'Test-Blind' },
-            ];
+                <!-- Resources Section -->
+                <div class="formula-card">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6">Top-Tier Prep Resources</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold">Free Resources (Essential)</h4>
+                            <ul class="space-y-2 mt-2">
+                                <li>
+                                    <a href="https://www.khanacademy.org/digital-sat" target="_blank" class="text-yellow-600 hover:underline">
+                                        <strong>Khan Academy:</strong>
+                                    </a> The official, free partner of the College Board. Personalized practice based on your skill level. Absolutely essential.</li>
+                                <li>
+                                    <a href="https://bluebook.app.collegeboard.org/" target="_blank" class="text-yellow-600 hover:underline">
+                                        <strong>College Board Bluebook App:</strong>
+                                    </a> Take official, full-length digital SAT practice tests in the same format as the real exam.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Paid Resources (Highly Recommended for 1600)</h4>
+                            <ul class="space-y-2 mt-2">
+                                <li>
+                                    <a href="https://collegeprep.uworld.com/sat/" target="_blank" class="text-yellow-600 hover:underline">
+                                        <strong>UWorld:</strong>
+                                    </a> Known for high-quality practice questions with incredibly detailed explanations that teach the concepts behind the answers.</li>
+                                <li>
+                                    <a href="https://www.princetonreview.com/college/sat-test-prep" target="_blank" class="text-yellow-600 hover:underline">
+                                        <strong>The Princeton Review:</strong>
+                                    </a> Offers comprehensive courses, tutoring, and score guarantees.</li>
+                                <li>
+                                    <a href="https://www.kaptest.com/sat" target="_blank" class="text-yellow-600 hover:underline">
+                                        <strong>Kaplan:</strong>
+                                    </a> Another major player with a long history of effective test prep courses and materials.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            const milestones = [
-                { date: new Date('2025-07-21'), task: 'Start SAT Prep (Khan Academy)' },
-                { date: new Date('2025-08-23'), task: 'SAT Test Date (First Attempt)' },
-                { date: new Date('2025-09-13'), task: 'SAT Test Date (Second Attempt)' },
-                { date: new Date('2025-09-30'), task: 'Finalize College List & Identify Recommenders' },
-                { date: new Date('2025-10-04'), task: 'SAT Test Date (Third Attempt)' },
-                { date: new Date('2025-10-31'), task: 'Complete Common App Essay First Draft' },
-                { date: new Date('2025-11-01'), task: 'Early Decision/Early Action Deadlines begin' },
-                { date: new Date('2025-11-08'), task: 'SAT Test Date (Fourth Attempt)' },
-                { date: new Date('2025-11-30'), task: 'UC Schools Application Deadline' },
-                { date: new Date('2025-12-06'), task: 'SAT Test Date (Final Attempt)' },
-                { date: new Date('2025-12-15'), task: 'Submit all Early Applications & Financial Aid Forms' },
-                { date: new Date('2026-01-01'), task: 'Regular Decision Deadlines begin (Many Ivy Leagues)' },
-                { date: new Date('2026-01-15'), task: 'Most Regular Decision & CSS Profile Deadlines' },
-                { date: new Date('2026-02-28'), task: 'Complete all College Interviews' },
-                { date: new Date('2026-03-31'), task: 'Final External Scholarship Applications' },
-                { date: new Date('2026-04-01'), task: 'Admissions Decisions Released (Ivy Day & others)' },
-                { date: new Date('2026-05-01'), task: 'National College Decision Day (Commit to a university)' },
-            ].sort((a, b) => a.date - b.date); // Sort milestones by date
+            <!-- Checklist & Visa Section -->
+            <section id="checklist-visa" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Document Checklist & F-1 Visa Guide</h2>
+                <p class="text-lg text-gray-600 mb-8">Stay organized with this interactive checklist for all your application components. Once you're accepted, this section will guide you through the F-1 student visa process at the U.S. Embassy in Nairobi. Checking off items here will update your progress on the Dashboard.</p>
 
-            function renderTable(data) {
-                universityTableBody.innerHTML = '';
-                data.forEach(uni => {
-                    const row = document.createElement('tr');
-                    row.className = 'bg-white border-b';
-                    row.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold mb-4">Application Document Checklist</h3>
+                        <div id="checklist" class="space-y-3">
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Valid Passport (valid 6+ months beyond start date)</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">KCSE Certificate & Transcripts</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">SAT Score Reports (sent officially)</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">English Proficiency Scores (if required)</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Completed Common App (or other platform)</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Main Essay & Supplemental Essays</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Letters of Recommendation (2-3)</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">CSS Profile / ISFAA</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Financial Documents (bank statements, income proof)</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">School Profile</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">I-20 Form (after admission)</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">SEVIS I-901 Fee Paid</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">DS-160 Completed</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Visa Interview Scheduled</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Immunization Records</label>
+                            <label class="flex items-center checklist-item"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 mr-3">Health Insurance Arranged</label>
+                        </div>
+                    </div>
+
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold mb-4">F-1 Visa Process (Post-Acceptance)</h3>
+                        <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Receive Form I-20 from your university.</li>
+                            <li>Pay the SEVIS I-901 Fee online.</li>
+                            <li>Complete the DS-160 online visa application.</li>
+                            <li>Schedule an interview at the U.S. Embassy in Nairobi.</li>
+                            <li>Gather documents: I-20, passport, financial proof, acceptance letter.</li>
+                            <li>Attend your interview and answer questions confidently.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const navLinks = document.querySelectorAll('.nav-link');
+                const sections = document.querySelectorAll('.content-section');
+                const universityTableBody = document.getElementById('universityTableBody');
+                const sortableHeaders = document.querySelectorAll('.table-sortable th');
+                const universityFilter = document.getElementById('universityFilter');
+                const checklistContainer = document.getElementById('checklist');
+                const progressBar = document.getElementById('progressBar');
+                const progressText = document.getElementById('progressText');
+                const upcomingMilestonesList = document.getElementById('upcomingMilestones');
+
+                const universityData = [
+                    {
+                        name: 'Harvard University',
+                        category: 'Ivy League',
+                        deadline: 'Jan 1',
+                        platform: 'Common App',
+                        aid: 'Need-Blind',
+                        test: 'Test-Optional (Recommended)'
+                    }, {
+                        name: 'Princeton University',
+                        category: 'Ivy League',
+                        deadline: 'Jan 1',
+                        platform: 'Common App',
+                        aid: 'Need-Blind',
+                        test: 'Test-Optional (Recommended)'
+                    }, {
+                        name: 'Yale University',
+                        category: 'Ivy League',
+                        deadline: 'Jan 2',
+                        platform: 'Common App',
+                        aid: 'Need-Blind',
+                        test: 'Test-Required'
+                    }, {
+                        name: 'Columbia University',
+                        category: 'Ivy League',
+                        deadline: 'Jan 1',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'University of Pennsylvania',
+                        category: 'Ivy League',
+                        deadline: 'Jan 5',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Brown University',
+                        category: 'Ivy League',
+                        deadline: 'Jan 3',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Dartmouth College',
+                        category: 'Ivy League',
+                        deadline: 'Jan 3',
+                        platform: 'Common App',
+                        aid: 'Need-Blind',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Cornell University',
+                        category: 'Ivy League',
+                        deadline: 'Jan 2',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'MIT',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 1',
+                        platform: 'MIT App',
+                        aid: 'Need-Blind',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'California Institute of Technology (Caltech)',
+                        category: 'Caltech',
+                        deadline: 'Jan 3',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, Limited',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Stanford University',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 5',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional (Recommended)'
+                    }, {
+                        name: 'Amherst College',
+                        category: 'Need-Blind',
+                        deadline: 'Jan 3',
+                        platform: 'Common App',
+                        aid: 'Need-Blind',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Bowdoin College',
+                        category: 'Need-Blind',
+                        deadline: 'Jan 5',
+                        platform: 'Common App',
+                        aid: 'Need-Blind',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Williams College',
+                        category: 'Need-Blind',
+                        deadline: 'Jan 8',
+                        platform: 'Common App',
+                        aid: 'Need-Blind',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Duke University',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 2',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional (Recommended)'
+                    }, {
+                        name: 'Vanderbilt University',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 1',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional (Recommended)'
+                    }, {
+                        name: 'Rice University',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 4',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'University of Rochester',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 5',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Trinity College',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 17',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Skidmore College',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 15',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'University of Chicago',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 2',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Northwestern University',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 3',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    }, {
+                        name: 'Washington University in St. Louis',
+                        category: 'Other Top CS & Aid',
+                        deadline: 'Jan 2',
+                        platform: 'Common App',
+                        aid: 'Need-Aware, 100% Met (if admitted)',
+                        test: 'Test-Optional'
+                    },
+
+                    // UC Schools - generally limited aid for internationals
+                    {
+                        name: 'UC Berkeley',
+                        category: 'UC Schools',
+                        deadline: 'Nov 30',
+                        platform: 'UC App',
+                        aid: 'Limited Need-Based',
+                        test: 'Test-Blind'
+                    }, {
+                        name: 'UCLA',
+                        category: 'UC Schools',
+                        deadline: 'Nov 30',
+                        platform: 'UC App',
+                        aid: 'Limited Need-Based',
+                        test: 'Test-Blind'
+                    }, {
+                        name: 'UC San Diego',
+                        category: 'UC Schools',
+                        deadline: 'Nov 30',
+                        platform: 'UC App',
+                        aid: 'Limited Need-Based',
+                        test: 'Test-Blind'
+                    }, {
+                        name: 'UC Irvine',
+                        category: 'UC Schools',
+                        deadline: 'Nov 30',
+                        platform: 'UC App',
+                        aid: 'Limited Need-Based',
+                        test: 'Test-Blind'
+                    }, {
+                        name: 'UC Davis',
+                        category: 'UC Schools',
+                        deadline: 'Nov 30',
+                        platform: 'UC App',
+                        aid: 'Limited Need-Based',
+                        test: 'Test-Blind'
+                    }, {
+                        name: 'UC Santa Barbara',
+                        category: 'UC Schools',
+                        deadline: 'Nov 30',
+                        platform: 'UC App',
+                        aid: 'Limited Need-Based',
+                        test: 'Test-Blind'
+                    }
+                ];
+
+                const milestones = [
+                    {
+                        date: new Date('2025-07-21'),
+                        task: 'Start SAT Prep (Khan Academy)'
+                    }, {
+                        date: new Date('2025-08-23'),
+                        task: 'SAT Test Date (First Attempt)'
+                    }, {
+                        date: new Date('2025-09-13'),
+                        task: 'SAT Test Date (Second Attempt)'
+                    }, {
+                        date: new Date('2025-09-30'),
+                        task: 'Finalize College List & Identify Recommenders'
+                    }, {
+                        date: new Date('2025-10-04'),
+                        task: 'SAT Test Date (Third Attempt)'
+                    }, {
+                        date: new Date('2025-10-31'),
+                        task: 'Complete Common App Essay First Draft'
+                    }, {
+                        date: new Date('2025-11-01'),
+                        task: 'Early Decision/Early Action Deadlines begin'
+                    }, {
+                        date: new Date('2025-11-08'),
+                        task: 'SAT Test Date (Fourth Attempt)'
+                    }, {
+                        date: new Date('2025-11-30'),
+                        task: 'UC Schools Application Deadline'
+                    }, {
+                        date: new Date('2025-12-06'),
+                        task: 'SAT Test Date (Final Attempt)'
+                    }, {
+                        date: new Date('2025-12-15'),
+                        task: 'Submit all Early Applications & Financial Aid Forms'
+                    }, {
+                        date: new Date('2026-01-01'),
+                        task: 'Regular Decision Deadlines begin (Many Ivy Leagues)'
+                    }, {
+                        date: new Date('2026-01-15'),
+                        task: 'Most Regular Decision & CSS Profile Deadlines'
+                    }, {
+                        date: new Date('2026-02-28'),
+                        task: 'Complete all College Interviews'
+                    }, {
+                        date: new Date('2026-03-31'),
+                        task: 'Final External Scholarship Applications'
+                    }, {
+                        date: new Date('2026-04-01'),
+                        task: 'Admissions Decisions Released (Ivy Day & others)'
+                    }, {
+                        date: new Date('2026-05-01'),
+                        task: 'National College Decision Day (Commit to a university)'
+                    }
+                ].sort((a, b) => a.date - b.date); // Sort milestones by date
+
+                function renderTable(data) {
+                    universityTableBody.innerHTML = '';
+                    data.forEach(uni => {
+                        const row = document.createElement('tr');
+                        row.className = 'bg-white border-b';
+                        row.innerHTML = `
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${uni.name}</th>
                         <td class="px-6 py-4">${uni.category}</td>
                         <td class="px-6 py-4">${uni.deadline}</td>
@@ -526,225 +803,289 @@
                         <td class="px-6 py-4">${uni.aid}</td>
                         <td class="px-6 py-4">${uni.test}</td>
                     `;
-                    universityTableBody.appendChild(row);
-                });
-            }
-            
-            let currentSort = { key: 'name', order: 'asc' };
-
-            sortableHeaders.forEach(header => {
-                header.addEventListener('click', () => {
-                    const sortKey = header.dataset.sort;
-                    const order = (currentSort.key === sortKey && currentSort.order === 'asc') ? 'desc' : 'asc';
-                    
-                    currentSort = { key: sortKey, order: order };
-
-                    const sortedData = [...universityData].sort((a, b) => {
-                        let valA = String(a[sortKey]).toUpperCase();
-                        let valB = String(b[sortKey]).toUpperCase();
-
-                        if (valA < valB) {
-                            return order === 'asc' ? -1 : 1;
-                        }
-                        if (valA > valB) {
-                            return order === 'asc' ? 1 : -1;
-                        }
-                        return 0;
+                        universityTableBody.appendChild(row);
                     });
-                    renderTable(sortedData);
-                });
-            });
-
-            universityFilter.addEventListener('change', (e) => {
-                const selectedCategory = e.target.value;
-                let filteredData = universityData;
-                if (selectedCategory !== 'All') {
-                    if (selectedCategory === 'Need-Blind') {
-                        filteredData = universityData.filter(uni => uni.aid.includes('Need-Blind'));
-                    } else {
-                        filteredData = universityData.filter(uni => uni.category === selectedCategory);
-                    }
                 }
-                renderTable(filteredData);
-            });
 
+                let currentSort = {
+                    key: 'name',
+                    order: 'asc'
+                };
 
-            function showSection(hash) {
-                sections.forEach(section => {
-                    if ('#' + section.id === hash) {
-                        section.classList.add('active');
-                    } else {
-                        section.classList.remove('active');
-                    }
+                sortableHeaders.forEach(header => {
+                    header.addEventListener('click', () => {
+                        const sortKey = header.dataset.sort;
+                        const order = (currentSort.key === sortKey && currentSort.order === 'asc')
+                            ? 'desc'
+                            : 'asc';
+
+                        currentSort = {
+                            key: sortKey,
+                            order: order
+                        };
+
+                        const sortedData = [...universityData].sort((a, b) => {
+                            let valA = String(a[sortKey]).toUpperCase();
+                            let valB = String(b[sortKey]).toUpperCase();
+
+                            if (valA < valB) {
+                                return order === 'asc'
+                                    ? -1
+                                    : 1;
+                            }
+                            if (valA > valB) {
+                                return order === 'asc'
+                                    ? 1
+                                    : -1;
+                            }
+                            return 0;
+                        });
+                        renderTable(sortedData);
+                    });
                 });
-                navLinks.forEach(link => {
-                    if (link.getAttribute('href') === hash) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
-            }
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href');
-                    // Special handling for internal page links
-                    if (targetId.startsWith('#')) {
-                        window.location.hash = targetId;
-                    } else {
-                        window.open(targetId, '_blank');
-                    }
-                });
-            });
-
-            window.addEventListener('hashchange', () => {
-                const hash = window.location.hash || '#dashboard';
-                showSection(hash);
-            });
-            
-            const initialHash = window.location.hash || '#dashboard';
-            showSection(initialHash);
-            renderTable(universityData);
-
-            // Checklist functionality
-            function updateProgress() {
-                const totalItems = checklistContainer.querySelectorAll('input[type="checkbox"]').length;
-                const completedItems = checklistContainer.querySelectorAll('input[type="checkbox"]:checked').length;
-                const progressPercentage = totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
-                
-                progressBar.style.width = `${progressPercentage}%`;
-                progressText.textContent = `${Math.round(progressPercentage)}% Complete (${completedItems}/${totalItems})`;
-
-                // Save checklist state to localStorage (optional, but good for persistence)
-                const checklistState = {};
-                checklistContainer.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
-                    checklistState[index] = checkbox.checked;
-                });
-                localStorage.setItem('bernadetteChecklist', JSON.stringify(checklistState));
-            }
-
-            // Load checklist state from localStorage
-            function loadProgress() {
-                const savedState = localStorage.getItem('bernadetteChecklist');
-                if (savedState) {
-                    const checklistState = JSON.parse(savedState);
-                    checklistContainer.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
-                        checkbox.checked = checklistState[index] || false;
-                        if (checkbox.checked) {
-                            checkbox.closest('.checklist-item').classList.add('completed');
+                universityFilter.addEventListener('change', (e) => {
+                    const selectedCategory = e.target.value;
+                    let filteredData = universityData;
+                    if (selectedCategory !== 'All') {
+                        if (selectedCategory === 'Need-Blind') {
+                            filteredData = universityData.filter(uni => uni.aid.includes('Need-Blind'));
                         } else {
-                            checkbox.closest('.checklist-item').classList.remove('completed');
+                            filteredData = universityData.filter(uni => uni.category === selectedCategory);
+                        }
+                    }
+                    renderTable(filteredData);
+                });
+
+                function showSection(hash) {
+                    sections.forEach(section => {
+                        if ('#' + section.id === hash) {
+                            section
+                                .classList
+                                .add('active');
+                        } else {
+                            section
+                                .classList
+                                .remove('active');
+                        }
+                    });
+                    navLinks.forEach(link => {
+                        if (link.getAttribute('href') === hash) {
+                            link
+                                .classList
+                                .add('active');
+                        } else {
+                            link
+                                .classList
+                                .remove('active');
                         }
                     });
                 }
-                updateProgress(); // Initial update after loading
-            }
 
-            checklistContainer.addEventListener('change', (e) => {
-                if (e.target.type === 'checkbox') {
-                    if (e.target.checked) {
-                        e.target.closest('.checklist-item').classList.add('completed');
-                    } else {
-                        e.target.closest('.checklist-item').classList.remove('completed');
-                    }
-                    updateProgress();
-                }
-            });
-
-            loadProgress(); // Load progress on page load
-
-            // Upcoming Milestones for Dashboard
-            function displayUpcomingMilestones() {
-                upcomingMilestonesList.innerHTML = '';
-                const now = new Date();
-                const upcoming = milestones.filter(m => m.date >= now).slice(0, 5); // Show next 5 milestones
-
-                if (upcoming.length > 0) {
-                    upcoming.forEach(m => {
-                        const li = document.createElement('li');
-                        li.textContent = `${m.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}: ${m.task}`;
-                        upcomingMilestonesList.appendChild(li);
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href');
+                        // Special handling for internal page links
+                        if (targetId.startsWith('#')) {
+                            window.location.hash = targetId;
+                        } else {
+                            window.open(targetId, '_blank');
+                        }
                     });
-                } else {
-                    upcomingMilestonesList.innerHTML = '<li>No upcoming milestones. Keep up the great work!</li>';
+                });
+
+                window.addEventListener('hashchange', () => {
+                    const hash = window.location.hash || '#dashboard';
+                    showSection(hash);
+                });
+
+                const initialHash = window.location.hash || '#dashboard';
+                showSection(initialHash);
+                renderTable(universityData);
+
+                // Checklist functionality
+                function updateProgress() {
+                    const totalItems = checklistContainer
+                        .querySelectorAll('input[type="checkbox"]')
+                        .length;
+                    const completedItems = checklistContainer
+                        .querySelectorAll('input[type="checkbox"]:checked')
+                        .length;
+                    const progressPercentage = totalItems > 0
+                        ? (completedItems / totalItems) * 100
+                        : 0;
+
+                    progressBar.style.width = `${progressPercentage}%`;
+                    progressText.textContent = `${Math.round(progressPercentage)}% Complete (${completedItems}/${totalItems})`;
+
+                    // Save checklist state to localStorage (optional, but good for persistence)
+                    const checklistState = {};
+                    checklistContainer
+                        .querySelectorAll('input[type="checkbox"]')
+                        .forEach((checkbox, index) => {
+                            checklistState[index] = checkbox.checked;
+                        });
+                    localStorage.setItem('bernadetteChecklist', JSON.stringify(checklistState));
                 }
-            }
-            displayUpcomingMilestones(); // Display on dashboard load
 
+                // Load checklist state from localStorage
+                function loadProgress() {
+                    const savedState = localStorage.getItem('bernadetteChecklist');
+                    if (savedState) {
+                        const checklistState = JSON.parse(savedState);
+                        checklistContainer
+                            .querySelectorAll('input[type="checkbox"]')
+                            .forEach((checkbox, index) => {
+                                checkbox.checked = checklistState[index] || false;
+                                if (checkbox.checked) {
+                                    checkbox
+                                        .closest('.checklist-item')
+                                        .classList
+                                        .add('completed');
+                                } else {
+                                    checkbox
+                                        .closest('.checklist-item')
+                                        .classList
+                                        .remove('completed');
+                                }
+                            });
+                    }
+                    updateProgress(); // Initial update after loading
+                }
 
-            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
-            const timelineChart = new Chart(timelineCtx, {
-                type: 'bar',
-                data: {
-                    labels: [
-                        'Jul-Aug 2025: Foundational Prep',
-                        'Sep-Oct 2025: Initial Tests & Essays',
-                        'Nov-Dec 2025: Early Apps & Aid Forms',
-                        'Jan 2026: Regular Decision Submissions',
-                        'Feb-Mar 2026: Follow-up & Interviews',
-                        'Apr 2026: Admissions Decisions'
-                    ],
-                    datasets: [{
-                        label: 'Application Phase',
-                        data: [100, 100, 100, 100, 100, 100],
-                        backgroundColor: [
-                            '#FCD34D', // Amber 300
-                            '#F9A825', // Amber 500
-                            '#F57F17', // Amber 700
-                            '#D97706', // Amber 800
-                            '#4CAF50', // Green
-                            '#1E88E5'  // Blue
-                        ],
-                        borderColor: [
-                            '#FBBF24',
-                            '#F59E0B',
-                            '#D97706',
-                            '#B45309',
-                            '#388E3C',
-                            '#1976D2'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+                checklistContainer.addEventListener('change', (e) => {
+                    if (e.target.type === 'checkbox') {
+                        if (e.target.checked) {
+                            e
+                                .target
+                                .closest('.checklist-item')
+                                .classList
+                                .add('completed');
+                        } else {
+                            e
+                                .target
+                                .closest('.checklist-item')
+                                .classList
+                                .remove('completed');
+                        }
+                        updateProgress();
+                    }
+                });
+
+                loadProgress(); // Load progress on page load
+
+                // Upcoming Milestones for Dashboard
+                function displayUpcomingMilestones() {
+                    upcomingMilestonesList.innerHTML = '';
+                    const now = new Date();
+                    const upcoming = milestones
+                        .filter(m => m.date >= now)
+                        .slice(0, 5); // Show next 5 milestones
+
+                    if (upcoming.length > 0) {
+                        upcoming.forEach(m => {
+                            const li = document.createElement('li');
+                            li.textContent = `${m
+                                .date
+                                .toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric'})}: ${m.task}`;
+                                    upcomingMilestonesList.appendChild(li);
+                                });
+                        } else {
+                            upcomingMilestonesList.innerHTML = '<li>No upcoming milestones. Keep up the great work!</li>';
+                        }}
+                    displayUpcomingMilestones(); // Display on dashboard load
+
+                    const timelineCtx = document
+                        .getElementById('timelineChart')
+                        .getContext('2d');
+                    const timelineChart = new Chart(timelineCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: [
+                                'Jul-Aug 2025: Foundational Prep',
+                                'Sep-Oct 2025: Initial Tests & Essays',
+                                'Nov-Dec 2025: Early Apps & Aid Forms',
+                                'Jan 2026: Regular Decision Submissions',
+                                'Feb-Mar 2026: Follow-up & Interviews',
+                                'Apr 2026: Admissions Decisions'
+                            ],
+                            datasets: [
+                                {
+                                    label: 'Application Phase',
+                                    data: [
+                                        100,
+                                        100,
+                                        100,
+                                        100,
+                                        100,
+                                        100
+                                    ],
+                                    backgroundColor: [
+                                        '#FCD34D', // Amber 300
+                                        '#F9A825', // Amber 500
+                                        '#F57F17', // Amber 700
+                                        '#D97706', // Amber 800
+                                        '#4CAF50', // Green
+                                        '#1E88E5' // Blue
+                                    ],
+                                    borderColor: [
+                                        '#FBBF24',
+                                        '#F59E0B',
+                                        '#D97706',
+                                        '#B45309',
+                                        '#388E3C',
+                                        '#1976D2'
+                                    ],
+                                    borderWidth: 1
+                                }
+                            ]
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const phase = context.label;
-                                    let tasks = '';
-                                    if (phase === 'Jul-Aug 2025: Foundational Prep') tasks = 'Tasks: Start SAT Prep (Khan Academy), Finalize College List (Need-Blind focus), Identify & brief recommenders, Start Gap Year CS projects/certifications.';
-                                    if (phase === 'Sep-Oct 2025: Initial Tests & Essays') tasks = 'Tasks: Take 1st SAT (Aug 23/Sep 13), Analyze scores, Brainstorm Common App essay, Create application accounts (Common App, MIT).';
-                                    if (phase === 'Nov-Dec 2025: Early Apps & Aid Forms') tasks = 'Tasks: Take 2nd/3rd SAT (Nov 8/Dec 6), Submit Early Decision/Early Action apps, Draft supplemental essays, Gather financial documents for CSS Profile/ISFAA.';
-                                    if (phase === 'Jan 2026: Regular Decision Submissions') tasks = 'Tasks: Submit all Regular Decision applications, Complete & submit CSS Profile/ISFAA, Ensure LORs & transcripts are sent.';
-                                    if (phase === 'Feb-Mar 2026: Follow-up & Interviews') tasks = 'Tasks: Follow up on missing documents, Prepare for & attend interviews, Actively apply for external scholarships (Mastercard, Zawadi).';
-                                    if (phase === 'Apr 2026: Admissions Decisions') tasks = 'Tasks: Receive admission & financial aid offers, Compare packages carefully, Make final university choice by May 1st.';
-                                    return tasks;
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            const phase = context.label;
+                                            let tasks = '';
+                                            if (phase === 'Jul-Aug 2025: Foundational Prep') 
+                                                tasks = 'Tasks: Start SAT Prep (Khan Academy), Finalize College List (Need-Blind focus), Identify & brief recommenders, Start Gap Year CS projects/certifications.';
+                                            if (phase === 'Sep-Oct 2025: Initial Tests & Essays') 
+                                                tasks = 'Tasks: Take 1st SAT (Aug 23/Sep 13), Analyze scores, Brainstorm Common App essay, Create application accounts (Common App, MIT).';
+                                            if (phase === 'Nov-Dec 2025: Early Apps & Aid Forms') 
+                                                tasks = 'Tasks: Take 2nd/3rd SAT (Nov 8/Dec 6), Submit Early Decision/Early Action apps, Draft supplemental essays, Gather financial documents for CSS Profile/ISFAA.';
+                                            if (phase === 'Jan 2026: Regular Decision Submissions') 
+                                                tasks = 'Tasks: Submit all Regular Decision applications, Complete & submit CSS Profile/ISFAA, Ensure LORs & transcripts are sent.';
+                                            if (phase === 'Feb-Mar 2026: Follow-up & Interviews') 
+                                                tasks = 'Tasks: Follow up on missing documents, Prepare for & attend interviews, Actively apply for external scholarships (Mastercard, Zawadi).';
+                                            if (phase === 'Apr 2026: Admissions Decisions') 
+                                                tasks = 'Tasks: Receive admission & financial aid offers, Compare packages carefully, Make final university choice by May 1st.';
+                                            return tasks;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    display: false
+                                },
+                                y: {
+                                    grid: {
+                                        display: false
+                                    }
                                 }
                             }
                         }
-                    },
-                    scales: {
-                        x: {
-                            display: false,
-                        },
-                        y: {
-                           grid: {
-                                display: false
-                           }
-                        }
-                    }
-                }
-            });
-        });
-    </script>
-</body>
+                    });
+                });
+        </script>
+    </body>
 </html>
